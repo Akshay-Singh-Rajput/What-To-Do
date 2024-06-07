@@ -6,7 +6,7 @@ export default function Main() {
           Create your next website fast and easy
         </h1>
         <h2 class="text-2xl font-4 font-semibold lh-6 ld-04 pb-11 text-gray-700 text-center">
-          nine4 is a free to use template website for websites made
+          what to do is a free website
           <br />
           with Next.js and styled with Tailwind CSS
         </h2>
@@ -133,7 +133,7 @@ export default function Main() {
               name="email"
               autocomplete="email"
               class="border border-gray-600 w-1/4 pr-2 pl-2 py-3 mt-2 rounded-md text-gray-800 font-semibold hover:border-gray-700 bg-black"
-            />{" "}
+            />{ " " }
             <a
               class="inline-flex items-center px-14 py-3 mt-2 ml-2 font-medium text-black transition duration-500 ease-in-out transform bg-transparent border rounded-lg bg-white"
               href="/"
