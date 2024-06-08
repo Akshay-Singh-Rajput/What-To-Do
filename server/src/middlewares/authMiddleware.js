@@ -11,7 +11,6 @@ module.exports = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (err) {
-        console.error(err)
-        res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized', message : 'Token expired'});
     }
 };

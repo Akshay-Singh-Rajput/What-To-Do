@@ -8,7 +8,9 @@ export default function RootLayout({ children }) {
         <div>
             <AuthContextProvider>
                 <Header />
+                <div className="page-layout-wrapper">
                 { children }
+                </div>
             </AuthContextProvider>
         </div>
     );
