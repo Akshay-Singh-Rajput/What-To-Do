@@ -1,10 +1,40 @@
-import React from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Link from 'next/link';
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/router";
 
 export default function Header() {
-  const [ navbarOpen, setNavbarOpen ] = React.useState(false);
-  const [ flyer, setFlyer ] = React.useState(false);
-  const [ flyerTwo, setFlyerTwo ] = React.useState(false);
+  const { user, googleSignIn, logOut } = useAuth();
+  const [ navbarOpen, setNavbarOpen ] = useState(false);
+  const [ loading, setLoading ] = useState(true);
+  const router = useRouter();
+
+
+  const handleSignIn = async () => {
+    try {
+      await googleSignIn();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await logOut();
+      router.push('/');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      setLoading(false);
+    };
+    checkAuthentication();
+  }, [ user ]);
+
 
   return (
     <header className="fixed top-0 w-full clearNav z-50">
@@ -45,19 +75,34 @@ export default function Header() {
             (navbarOpen ? " flex" : " hidden")
           }
         >
-          <div className="md:ml-auto md:mr-auto font-4 pt-1 md:pl-14 pl-1 flex flex-wrap items-center md:text-base text-1xl md:justify-center justify-items-start">
-            <Link href="/register" className="mr-11 pr-2 cursor-pointer text-gray-300 hover:text-white font-semibold tr04">
-              Register
-            </Link>
-            <Link href="/login" className="mr-12 md:ml-11 ml-0 cursor-pointer text-gray-300 hover:text-white font-semibold tr04">
-              Login
-            </Link>
-            <Link href="/protected" className="mr-5 cursor-pointer text-gray-300 hover:text-white font-semibold tr04">
-              Protected
+          <div className="md:ml-auto md:mr-auto font-4 pt-1 md:pl-14 pl-1 flex flex-wrap items-center md:text-base text-1xl md:justify-center justify-items-start gap-8">
+            { loading ? null : !user ? (<Fragment>
+              <div className="pr-2 cursor-pointer text-gray-300 hover:text-white font-semibold tr04" onClick={ handleSignIn }>
+                Sign up
+              </div>
+              <div className="mr-12 md:ml-11 ml-0 cursor-pointer text-gray-300 hover:text-white font-semibold tr04" onClick={ handleSignIn }>
+                Login
+              </div>
+            </Fragment>)
+              : (
+                <Fragment>
+                  <div className="flex items-center gap-8">
+                    <p className="cursor-pointer text-gray-300 hover:text-white font-semibold tr04">Welcome, { user.displayName }</p>
+                    <p className="cursor-pointer text-gray-300 hover:text-white font-semibold tr04" onClick={ handleSignOut }>
+                      Sign out
+                    </p>
+                  </div>
+                </Fragment>
+              )
+
+            }
+            <Link href="/profile/page" className="cursor-pointer text-gray-300 hover:text-white font-semibold tr04">
+              Profile
             </Link>
 
           </div>
-          <a
+
+          <Link
             href="https://twitter.com/"
             rel="noopener noreferrer"
             target="_blank"
@@ -77,8 +122,8 @@ export default function Header() {
                 fill="white"
               ></path>
             </svg>
-          </a>
-          <a
+          </Link>
+          <Link
             data-v-54e46119=""
             href="https://github.com/Akshay-Singh-Rajput/What-To-Do"
             rel="noopener noreferrer"
@@ -103,7 +148,7 @@ export default function Header() {
                 fill="white"
               ></path>
             </svg>
-          </a>
+          </Link>
         </div>
       </div>
     </header>
