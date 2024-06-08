@@ -1,32 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../app/context/AuthContext";
+import { Typography } from '@mui/material';
 
-const page = () => {
+const Page = () => {
     const { user } = useAuth();
     const [ loading, setLoading ] = useState(true);
 
+    const checkAuthentication = () => {
+        setLoading(false);
+    };
+
     useEffect(() => {
-        const checkAuthentication = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 50));
-            setLoading(false);
-        };
         checkAuthentication();
     }, [ user ]);
 
     return (
-        <div className="min-h-screen m-auto flex flex-col justify-center items-center text-gray-300 hover:text-white font-semibold tr04">
+        <div className="h-full flex flex-col justify-center items-center dark:bg-gray-900 bg-gray-100 dark:text-white text-gray-800">
             { loading ? (
-               'loading...'
+                'Loading...'
             ) : user ? (
-                <p>
-                    Welcome, { user.displayName } - you are logged in to the profile page -
-                    a protected route.
-                </p>
+                <Typography variant="body1">
+                    Welcome, { user.displayName } - you are logged in to the profile page - a protected route.
+                </Typography>
             ) : (
-                <p>You must be logged in to view this page - protected route.</p>
+                <Typography variant="body1">
+                    You must be logged in to view this page - protected route.
+                </Typography>
             ) }
         </div>
     );
 };
 
-export default page;
+export default Page;
