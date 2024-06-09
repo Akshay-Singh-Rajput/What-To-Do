@@ -36,10 +36,9 @@ const signup = () => {
             alert(response.data.message);
             router.push('/login');
         }).catch(error => {
-
+            alert(error.response.data.error);
         });
 
-        router.push('/');
     };
     const handleSignIn = async () => {
         try {

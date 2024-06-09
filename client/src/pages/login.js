@@ -32,7 +32,7 @@ const Login = () => {
     }).then(response => {
       console.log(response);
       setUser(response.data);
-      router.push('/profile/page');
+      router.push('/');
     }).catch(error => {
 
     });

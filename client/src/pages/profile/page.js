@@ -22,17 +22,17 @@ const Page = () => {
     const checkAuthentication = () => {
         setLoading(false);
         if (!user?.token) {
-            executeAfterDelay(() => (router.push('/')), 5000);
+            executeAfterDelay(() => router.push('/'), 5000);
         }
     };
 
     useEffect(() => {
         if (!!user?.token) {
             setLoading(false);
+        } else {
+            executeAfterDelay(checkAuthentication);
         }
-        executeAfterDelay(checkAuthentication);
     }, [ user ]);
-
 
     return (
         <div className="h-full flex flex-col justify-center items-center dark:bg-gray-900 bg-gray-100 dark:text-white text-gray-800">
