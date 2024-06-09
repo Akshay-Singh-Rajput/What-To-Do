@@ -2,7 +2,8 @@ import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react
 import axios from 'axios';
 import TypingEffect from '../../app/components/TypingEffect';
 import { useAuth } from '../../app/context/AuthContext';
-import { Button, TextField, Box, Typography, CircularProgress } from '@mui/material';
+import { Button, TextField, Box, Typography, CircularProgress, List, ListItemText, ListItem } from '@mui/material';
+import { useRouter } from 'next/router';
 
 const Page = () => {
     const { user } = useAuth();
@@ -12,6 +13,7 @@ const Page = () => {
     const [ loading, setLoading ] = useState(true);
     const [ isTypingCompleted, setIsTypingCompleted ] = useState(true);
     const messagesEndRef = useRef(null);
+    const router = useRouter();
 
     const handleSendMessage = () => {
         if (input.trim() === '' || !isTypingCompleted) return;
@@ -48,8 +50,24 @@ const Page = () => {
             });
     };
 
+    const executeAfterDelay = (callback, delay = 3000) => {
+        if (typeof callback !== 'function') {
+            throw new Error('The first argument must be a function');
+        }
+
+        setTimeout(() => {
+            callback();
+        }, delay);
+    };
+
+    const checkAuthentication = () => {
+        setLoading(false);
+        executeAfterDelay(() => (router.push('/')), 5000);
+    };
+
     useEffect(() => {
         setLoading(!user?.token);
+        executeAfterDelay(checkAuthentication);
     }, [ user ]);
 
 
@@ -138,9 +156,37 @@ const Page = () => {
                             </Box>
                         </Fragment>
                     ) : (
-                        <Typography>
-                            You must be logged in to view this page - protected route.
-                        </Typography>
+                        <Box margin="auto" className="text-center">
+                            <List>
+                                <ListItem>
+                                    <ListItemText
+                                        primary={
+                                            <Typography variant="h4" component="div">
+                                                You must be logged in to view this page.
+                                            </Typography>
+                                        }
+                                    />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText
+                                        primary={
+                                            <Typography variant="h5" component="div">
+                                                Tips: You can sign in with your Google account.
+                                            </Typography>
+                                        }
+                                    />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText
+                                        primary={
+                                            <Typography variant="h6" component="div">
+                                                Redirecting you to home...
+                                            </Typography>
+                                        }
+                                    />
+                                </ListItem>
+                            </List>
+                        </Box>
                     ) }
                 </Box>
             </Box>
