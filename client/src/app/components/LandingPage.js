@@ -2,8 +2,10 @@ import React from 'react';
 import { Container, Typography, Button, Box, useTheme } from '@mui/material';
 import { useThemeContext } from '../context/ThemeContext';
 import Link from 'next/link';
+import { useAuth } from '../context/AuthContext';
 
 const LandingPage = () => {
+    const { user } = useAuth();
     const theme = useTheme();
     const { themeMode } = useThemeContext();
 
@@ -17,10 +19,10 @@ const LandingPage = () => {
         <Container maxWidth="lg" className={ `${introBackgroundColor}` }>
             <div className={ `min-h-screen flex flex-col items-center justify-center ${introBackgroundColor}` }>
                 <Typography variant="h2" component="h1" gutterBottom className={ introTextColor }>
-                    Welcome to WhatToDo!
+                    Welcome { user?.displayName } to WhatToDo!
                 </Typography>
-                <Typography variant="h5" gutterBottom style={ { color: textColor } }>
-                    Your personalized activity planner based on mood, budget, location, group, age, and more!
+                <Typography variant="h5" gutterBottom sx={ { color: textColor } } className='text-center'>
+                    Discover your perfect plan with WhatToDo! Personalized activities tailored to your mood, budget, location, group, age, and more. Start exploring now!
                 </Typography>
                 <Link href="/suggestion/page" className='mt-2'>
                     <Button variant="contained" color="primary">

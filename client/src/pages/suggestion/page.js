@@ -62,16 +62,17 @@ const Page = () => {
 
     const checkAuthentication = () => {
         setLoading(false);
-        if(!user?.token){
-            executeAfterDelay(() => (router.push('/')), 5000);
+        if (!user?.token) {
+            executeAfterDelay(() => router.push('/'), 5000);
         }
     };
 
     useEffect(() => {
-        if(!!user?.token){
+        if (!!user?.token) {
             setLoading(false);
+        } else {
+            executeAfterDelay(checkAuthentication);
         }
-        executeAfterDelay(checkAuthentication);
     }, [ user ]);
 
 
