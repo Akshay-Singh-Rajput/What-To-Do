@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 const TypingEffect = ({ text, onTypingComplete }) => {
     const [ displayedText, setDisplayedText ] = useState('');
@@ -18,7 +19,18 @@ const TypingEffect = ({ text, onTypingComplete }) => {
         }
     }, [ index, text, onTypingComplete ]);
 
-    return <span>{ displayedText }</span>;
+    return <span>{ <MarkdownRenderer markdownContent={ displayedText } /> }</span>;
 };
 
 export default TypingEffect;
+
+
+const MarkdownRenderer = ({ markdownContent }) => {
+    return (
+        <div>
+            <ReactMarkdown>
+                { markdownContent }
+            </ReactMarkdown>
+        </div>
+    );
+};

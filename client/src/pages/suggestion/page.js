@@ -112,7 +112,7 @@ const Page = () => {
                                         className={ `flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}` }
                                     >
                                         <Box
-                                            className="max-w-xs rounded-lg py-2 px-4 my-1"
+                                            className="max-w-[90%] rounded-lg py-2 px-4 my-1"
                                             sx={ {
                                                 backgroundColor:
                                                     message.sender === 'user'

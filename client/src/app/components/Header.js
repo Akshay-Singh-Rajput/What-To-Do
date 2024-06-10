@@ -66,6 +66,9 @@ export default function Header() {
                         <Link href="/profile/page" passHref>
                           <Typography variant="body1" className="cursor-pointer text-white font-semibold">Profile</Typography>
                         </Link>
+                        <Link href="/profile/Home" passHref>
+                          <Typography variant="body1" className="cursor-pointer text-white font-semibold">Home</Typography>
+                        </Link>
                       <Typography variant="body1" className="cursor-pointer text-white font-semibold" onClick={ handleSignOut }>Sign Out</Typography>
                     </>
                   ) : (
