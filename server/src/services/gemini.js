@@ -9,35 +9,16 @@ if (!API_KEY) {
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+const chat = model.startChat();
+
 async function generateAiContent(prompt) {
     try {
-        // The Gemini 1.5 models are versatile and work with both text-only and multimodal prompts
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-        // history: [
-        //     {
-        //         role: "user",
-        //         parts: [ { text: "Hello, I have 2 dogs in my house." } ],
-        //     },
-        //     {
-        //         role: "model",
-        //         parts: [ { text: "Great to meet you. What would you like to know?" } ],
-        //     },
-        // ],
-
-        const chat = model.startChat({
-            history: [],
-            generationConfig: {
-                maxOutputTokens: 500,
-            },
-        });
 
         const result = await chat.sendMessage(prompt);
 
-
         // const result = await model.generateContent(prompt);
         const response = await result.response;
-        console.log({ response }, response.candidates)
         const text = await response.text();
         return text;
     } catch (error) {
