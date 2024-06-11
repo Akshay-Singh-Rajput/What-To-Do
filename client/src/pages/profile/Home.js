@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import LocationSearchBar from "../../app/components/LocationSearchBar";
 import SelectableOptions from "../../app/components/SelectableOptions";
 import PersonalizationOptions from "../../app/components/PersonalizationOptions";
-import { Box, Button } from "@mui/material";
+import { BottomNavigation, BottomNavigationAction, Box, Button } from "@mui/material";
+import HomeIcon from '@mui/icons-material/Home';
+import PersonIcon from '@mui/icons-material/Person';
+import HistoryIcon from '@mui/icons-material/History';
 
 export default function Home() {
   const apiKey = "AIzaSyD55Jf-yj3s7jUla7VnaVSU6HyH2doHBWs";
@@ -66,31 +69,31 @@ export default function Home() {
     { label: "Gender", value: "All" },
     { label: "Age", value: "18-45" },
   ];
-  const [selectedActivities, setSelectedActivities] =
-    useState(outdoorActivities);
-    const [selectedLikes, setSelectedLikes] = useState([]);
-    const [selectedFeelings, setSelectedFeelings] = useState([]);
-    const [selectedPersonalization, setSelectedPersonalization] = useState([]);
-    const [likesOptions, setLikesOptions] = useState(initialLikesOptions);
-    const [feelingOptions, setFeelingOptions] = useState(initialFeelingOptions);
-    const [personalizationOptions, setPersonalizationOptions] = useState(initialPersonalizationOptions);
+
+  const [selectedActivities, setSelectedActivities] = useState(outdoorActivities);
+  const [selectedLikes, setSelectedLikes] = useState([]);
+  const [selectedFeelings, setSelectedFeelings] = useState([]);
+  const [selectedPersonalization, setSelectedPersonalization] = useState([]);
+  const [likesOptions, setLikesOptions] = useState(initialLikesOptions);
+  const [feelingOptions, setFeelingOptions] = useState(initialFeelingOptions);
+  const [personalizationOptions, setPersonalizationOptions] = useState(initialPersonalizationOptions);
   const [payload, setPayload] = useState({});
+
   const handlePlaceSelected = (place) => {
     console.log("Selected place:", place);
   };
 
   const toggleActivityTab = (value) => {
-    console.log(value,"valeue")
     setSelectedActivityType(value);
-    if (value == "Outdoor") {
+    if (value === "Outdoor") {
       setSelectedActivities(outdoorActivities);
-    } else if (value == "Indoor") {
+    } else if (value === "Indoor") {
       setSelectedActivities(indoorActivities);
     } else {
       setSelectedActivities([...outdoorActivities, ...indoorActivities]);
     }
   };
-  
+
   const handleAddLikeOption = (option) => {
     setLikesOptions((prev) => [...prev, option]);
   };
@@ -112,7 +115,16 @@ export default function Home() {
   };
 
   const handleSelectPersonalization = (option) => {
-    setSelectedPersonalization((prev) => [...prev, option]);
+    setSelectedPersonalization((prev) => {
+      const existingIndex = prev.findIndex(opt => opt.label === option.label);
+      if (existingIndex >= 0) {
+        const newArray = [...prev];
+        newArray[existingIndex] = option;
+        return newArray;
+      } else {
+        return [...prev, option];
+      }
+    });
   };
 
   const handleSearch = () => {
@@ -127,56 +139,46 @@ export default function Home() {
   };
 
   return (
-    <>
-      <div className="min-h-screen m-auto flex flex-col gap-4 w-[90%] font-semibold tr04">
-        <div className="text-3xl pt-5"> Explore</div>
-        <LocationSearchBar
-          apiKey={apiKey}
-          onPlaceSelected={handlePlaceSelected}
-        />
-        <hr />
-        <div className=" flex justify-between ">
-          {activityType.map((activity, idx) => {
-            return (
-              <div className="flex flex-col gap-1 items-center">
-                <img
-                  className="w-24 rounded-lg h-16"
-                  src={activity.activity_img}
-                  alt={activity.activity_type}
-                  style={{ width: 20, height: 20, marginRight: 5 }}
-                />{" "}
-                <div
-                  key={idx}
-                  onClick={() => toggleActivityTab(activity.activity_type)}
-                  style={{
-                    cursor: "pointer",
-                    fontWeight:
-                      selectedActivityType === activity.activity_type
-                        ? "bold"
-                        : "normal",
-                    marginRight: "10px",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  {activity.activity_type}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <hr />
-        <div>
-        <Box sx={{ padding: 2 }}>
+    <div className="min-h-screen m-auto flex flex-col gap-4 w-[90%] font-semibold tr04">
+      <div className="text-3xl pt-5"> Explore</div>
+      <LocationSearchBar apiKey={apiKey} onPlaceSelected={handlePlaceSelected} />
+      <hr />
+      <div className="flex justify-between">
+        {activityType.map((activity, idx) => (
+          <div key={idx} className="flex flex-col gap-1 items-center">
+            <img
+              className="w-24 rounded-lg h-16"
+              src={activity.activity_img}
+              alt={activity.activity_type}
+              style={{ width: 20, height: 20, marginRight: 5 }}
+            />
+            <div
+              onClick={() => toggleActivityTab(activity.activity_type)}
+              style={{
+                cursor: "pointer",
+                fontWeight: selectedActivityType === activity.activity_type ? "bold" : "normal",
+                marginRight: "10px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {activity.activity_type}
+            </div>
+          </div>
+        ))}
+      </div>
+      <hr />
+      <Box sx={{ padding: 2 }}>
         <SelectableOptions title="What do you like?" options={selectedActivities} onAdd={handleAddLikeOption} onSelect={handleSelectLike} />
         <SelectableOptions title="How are you feeling?" options={feelingOptions} onAdd={handleAddFeelingOption} onSelect={handleSelectFeeling} />
         <PersonalizationOptions options={personalizationOptions} onAdd={handleAddPersonalizationOption} onSelect={handleSelectPersonalization} />
-        <Button variant="contained" onClick={handleSearch} fullWidth>
-          Search
-        </Button>
+        <Button variant="contained" onClick={handleSearch} fullWidth>Search</Button>
       </Box>
-        </div>
-      </div>
-    </>
+      <BottomNavigation style={{ position: 'sticky', bottom: 0, zIndex: 100 }}>
+        <BottomNavigationAction label="Home" icon={<HomeIcon />} />
+        <BottomNavigationAction label="Profile" icon={<PersonIcon />} />
+        <BottomNavigationAction label="History" icon={<HistoryIcon />} />
+      </BottomNavigation>
+    </div>
   );
 }
