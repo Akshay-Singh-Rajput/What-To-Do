@@ -10,11 +10,20 @@ if (!API_KEY) {
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-const chat = model.startChat();
+// const chat = model.startChat();
 
-async function generateAiContent(prompt) {
+const chatInstances = {};
+
+const createChatInstance = (email) => {
+    chatInstances[ email ] = model.startChat();
+};
+
+async function generateAiContent(email, prompt) {
     try {
-
+        if (!chatInstances[ email ]) {
+            createChatInstance(email);
+        }
+        const chat = chatInstances[ email ];
         const result = await chat.sendMessage(prompt);
 
         // const result = await model.generateContent(prompt);
