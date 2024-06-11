@@ -17,10 +17,10 @@ const Page = () => {
 
     const handleSendMessage = () => {
         if (input.trim() === '' || !isTypingCompleted) return;
-        setIsTypingCompleted(false);
         setMessages((prevMessages) => [ ...prevMessages, { sender: 'user', text: input } ]);
         setInput('');
         getSuggestion();
+        handleTypingComplete()
     };
 
     const getSuggestion = () => {
@@ -50,30 +50,37 @@ const Page = () => {
             });
     };
 
-    const executeAfterDelay = (callback, delay = 3000) => {
-        if (typeof callback !== 'function') {
-            throw new Error('The first argument must be a function');
-        }
+    let timeoutId;
 
-        setTimeout(() => {
-            callback();
-        }, delay);
+    const redirectToHomePage = () => {
+        router.push('/');
     };
 
     const checkAuthentication = () => {
+        const userToken = user?.token;
         setLoading(false);
-        if (!user?.token) {
-            executeAfterDelay(() => router.push('/'), 5000);
+
+        if (userToken) {
+            clearTimeout(timeoutId);
+            return;
         }
+
+        timeoutId = setTimeout(() => {
+            redirectToHomePage();
+        }, 4000);
     };
 
     useEffect(() => {
-        if (!!user?.token) {
-            setLoading(false);
-        } else {
-            executeAfterDelay(checkAuthentication);
-        }
+        setLoading(true);
+        timeoutId = setTimeout(() => {
+            checkAuthentication();
+        }, 1000);
+
+        return () => {
+            clearTimeout(timeoutId);
+        };
     }, [ user ]);
+
 
 
     const handleTypingComplete = () => {
@@ -135,7 +142,7 @@ const Page = () => {
                                 )) }
                                 { isTyping && (
                                     <Box className="max-w-xs bg-gray-200 text-black rounded-lg p-2 my-1 self-start">
-                                        <TypingEffect text="..." />
+                                        <TypingEffect text="Typing..." />
                                     </Box>
                                 ) }
                                 <div ref={ messagesEndRef } />

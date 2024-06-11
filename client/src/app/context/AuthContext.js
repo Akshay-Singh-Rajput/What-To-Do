@@ -8,11 +8,14 @@ import {
 import { auth } from "../firebase";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { usePathname } from 'next/navigation';
 
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
     const [ user, setUser ] = useState(null);
+    const [ pathname, setPathname ] = useState('');
+
     const router = useRouter();
 
     const googleSignIn = () => {
@@ -38,7 +41,9 @@ export const AuthContextProvider = ({ children }) => {
             }
         }).then(response => {
             setUser(response.data);
-            router.push('/');
+            if ([ "/", "/login", "/signup" ].includes(pathname)) {
+                router.push('/');
+            }
         }).catch(error => {
 
         });
@@ -54,6 +59,10 @@ export const AuthContextProvider = ({ children }) => {
         });
         return () => unsubscribe();
     }, []);
+
+    useEffect(() => {
+        setPathname(router.pathname);
+    }, [ router.pathname ]);
 
     return (
         <AuthContext.Provider value={ { user, setUser, googleSignIn, logOut } }>

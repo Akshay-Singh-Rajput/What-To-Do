@@ -24,7 +24,7 @@ Once you tell me more about your preferences, I can create a personalized itiner
 `;
         // return res.status(200).json({ content: text });
 
-        const content = await generateAiContent(prompt);
+        const content = await generateAiContent(req.user.email,prompt);
         res.status(200).json({ content });
     } catch (error) {
         res.status(500).json({ error: 'Failed to generate AI content' });
