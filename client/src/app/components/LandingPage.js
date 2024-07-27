@@ -1,22 +1,31 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Container, Typography, Button, Box, useTheme } from '@mui/material';
 import { useThemeContext } from '../context/ThemeContext';
 import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
+import SwipeableEdgeDrawer from './SwipeableEdgeDrawer';
 
 const LandingPage = () => {
     const { user } = useAuth();
     const theme = useTheme();
     const { themeMode } = useThemeContext();
+    const [isOpenModal, setIsOpenModal] = useState(false)
 
     const textColor = theme.palette.text.primary;
     const isDarkMode = themeMode === 'dark';
 
     const introTextColor = isDarkMode ? 'text-white' : 'text-black';
     const introBackgroundColor = isDarkMode ? 'bg-gray-900' : 'bg-gray-100';
+    
+    useMemo(()=>{
+   setIsOpenModal(true)
+    },[isOpenModal])
+
+
 
     return (
         <Container maxWidth="lg" className={ `${introBackgroundColor}` }>
+            <SwipeableEdgeDrawer isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
             <div className={ `min-h-screen flex flex-col items-center justify-center ${introBackgroundColor}` }>
                 <Typography variant="h2" component="h1" gutterBottom className={ introTextColor }>
                     Welcome { user?.displayName } to WhatToDo!

@@ -40,7 +40,9 @@ export default function Header() {
     <AppBar position="sticky" className="navbar-height">
       <Toolbar className="justify-between gap-8">
         <Typography variant="h6" component="div">
-          <Link href="/" className="flex text-3xl text-white font-medium md:mb-0">WhatToDo</Link>
+          <Link href="/" className="flex text-3xl text-white font-medium md:mb-0">
+          <img className="h-12 w-24" src="/tripwiser-high-resolution-logo-white-transparent.png"/>
+          </Link>
         </Typography>
 
         <Box className={ `flex items-center ${isLargeScreen ? 'gap-8' : 'gap-2'}`}>

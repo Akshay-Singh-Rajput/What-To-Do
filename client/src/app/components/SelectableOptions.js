@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Chip, Box, Typography, TextField, Button } from '@mui/material';
+import React, { useState } from "react";
+import { Chip, Box, Typography, TextField, Button } from "@mui/material";
 
-const SelectableOptions = ({ title, options, onAdd, onSelect }) => {
+const SelectableOptions = ({ title, options, onAdd, onSelect, selectedOption }) => {
   const [showInput, setShowInput] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
 
   const handleAddClick = () => {
     setShowInput(true);
@@ -16,7 +16,7 @@ const SelectableOptions = ({ title, options, onAdd, onSelect }) => {
   const handleAddActivity = () => {
     if (inputValue.trim()) {
       onAdd(inputValue.trim());
-      setInputValue('');
+      setInputValue("");
       setShowInput(false);
     }
   };
@@ -24,19 +24,31 @@ const SelectableOptions = ({ title, options, onAdd, onSelect }) => {
   return (
     <Box sx={{ marginY: 2 }}>
       <Typography variant="h6">{title}</Typography>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, marginTop: 1 }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, marginTop: 1 }}>
         {options.map((option, index) => (
-          <Chip key={index} label={option} clickable onClick={() => onSelect(option)} />
+          <Chip
+            key={index}
+            label={option}
+            clickable
+            onClick={() => onSelect(option)}
+            // sx={{
+            //   backgroundColor:
+            //     selectedOption === option ? "white" : "grey",
+            //   color: selectedOption === option ? "white" : "black",
+            // }}
+          />
         ))}
         {showInput ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <TextField
               size="small"
               value={inputValue}
               onChange={handleInputChange}
               placeholder="Add activity"
             />
-            <Button variant="contained" onClick={handleAddActivity}>Add</Button>
+            <Button variant="contained" onClick={handleAddActivity}>
+              Add
+            </Button>
           </Box>
         ) : (
           <Chip label="Others" clickable onClick={handleAddClick} />
