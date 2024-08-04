@@ -1,7 +1,6 @@
-import React from 'react';
-import { Card as MCard, CardContent, Typography, Link, CardMedia, Stack } from '@mui/material';
-
 const CardComponent = ({ place }) => {
+  debugger
+  console.log(place);
   return (
     <MCard
       sx={{
@@ -15,7 +14,6 @@ const CardComponent = ({ place }) => {
         }
       }}
     >
-      {/* Optionally add an image */}
       <CardMedia
         component="img"
         height="140"
@@ -26,7 +24,6 @@ const CardComponent = ({ place }) => {
           borderTopRightRadius: '8px',
         }}
       />
-
       <CardContent>
         <Stack spacing={1}>
           <Typography gutterBottom variant="h5" component="div">
@@ -58,5 +55,3 @@ const CardComponent = ({ place }) => {
     </MCard>
   );
 };
-
-export default CardComponent;

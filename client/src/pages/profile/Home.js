@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LocationSearchBar from "../../app/components/LocationSearchBar";
 import SelectableOptions from "../../app/components/SelectableOptions";
 import PersonalizationOptions from "../../app/components/PersonalizationOptions";
@@ -6,6 +6,7 @@ import { BottomNavigation, BottomNavigationAction, Box, Button } from "@mui/mate
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import HistoryIcon from '@mui/icons-material/History';
+import Page from "../suggestion/page";
 
 export default function Home() {
   const apiKey = "AIzaSyD55Jf-yj3s7jUla7VnaVSU6HyH2doHBWs"; // Gemini Api key
@@ -77,6 +78,7 @@ export default function Home() {
     "Gardening",
   ];
   const initialFeelingOptions = ["Happy", "Relax", "Inspired", "Stressed"];
+  const [prompt, setPrompt] = useState("");
 
   const initialPersonalizationOptions = [
     { label: "Distance", value: "5" },
@@ -93,6 +95,14 @@ export default function Home() {
   const [personalizationOptions, setPersonalizationOptions] = useState(initialPersonalizationOptions);
   const [payload, setPayload] = useState({});
   const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const [showRecommendation, setShowRecommendations] = useState(false);
+
+  useEffect(() => {
+    if (prompt) {
+      setShowRecommendations(true);
+    }
+  }, [prompt]);
 
   const handlePlaceSelected = (place) => {
     console.log("Selected place:", place);
@@ -139,6 +149,24 @@ export default function Home() {
     });
   };
 
+  const createPrompt = (payload) => {
+    const { selectedLikes, selectedFeelings, personalizationOptions, location } = payload;
+
+    const likesText = selectedLikes.length > 0 ? selectedLikes.join(", ") : "no specific likes";
+    const feelingsText = selectedFeelings.length > 0 ? selectedFeelings.join(", ") : "no particular feelings";
+
+    const optionsText = personalizationOptions.map(option => `${option.label}: ${option.value}`).join(", ");
+
+    const locationText = location ? `near ${location}` : "anywhere";
+
+    return `Hey, I am looking for recommendations for activities that match the following details: 
+      - Likes: ${likesText}
+      - Feelings: ${feelingsText}
+      - Personalization options: ${optionsText}
+      - Location: ${locationText}
+      Can you suggest some options?`;
+  };
+
   const handleSearch = () => {
     const newPayload = {
       selectedLikes,
@@ -147,48 +175,57 @@ export default function Home() {
       location: selectedLocation?.formatted_address
     };
     setPayload(newPayload);
-    console.log(newPayload);
+    const newPrompt = createPrompt(newPayload);
+    setPrompt(newPrompt);
+    console.log(newPrompt);
   };
 
   return (
-    <div className="min-h-screen m-auto flex flex-col gap-4 w-[90%] font-semibold tr04">
-      <div className="text-3xl pt-5"> Explore</div>
-      <LocationSearchBar apiKey={apiKey} onPlaceSelected={handlePlaceSelected} />
-      <hr />
-      <div className="flex justify-between border-b pb-2">
-        {activityType.map((activity, idx) => (
-          <div key={idx} className="flex flex-col gap-1 items-center">
-            <img
-              className="w-24 rounded-lg h-16"
-              src={activity?.activity_img}
-              alt={activity?.activity_type}
-              style={{ width: 20, height: 20, marginRight: 5 }}
-            />
-            <div
-              onClick={() => toggleActivityTab(activity?.activity_type)}
-              style={{
-                cursor: "pointer",
-                fontWeight: selectedActivityType === activity?.activity_type ? "bold" : "normal",
-              }}
-            >
-              {activity?.activity_type}
-            </div>
+    <>
+      {showRecommendation ? (
+        <Page prompt={prompt} cb={setShowRecommendations} />
+      ) : (
+        <div className="min-h-screen m-auto flex flex-col gap-4 w-[90%] font-semibold tr04">
+          <div className="text-3xl pt-5">Explore</div>
+          <LocationSearchBar apiKey={apiKey} onPlaceSelected={handlePlaceSelected} />
+          <hr />
+          <div className="flex justify-between border-b pb-2">
+            {activityType.map((activity, idx) => (
+              <div key={idx} className="flex flex-col gap-1 items-center">
+                <img
+                  className="w-24 rounded-lg h-16"
+                  src={activity?.activity_img}
+                  alt={activity?.activity_type}
+                  style={{ width: 20, height: 20, marginRight: 5 }}
+                />
+                <div
+                  onClick={() => toggleActivityTab(activity?.activity_type)}
+                  style={{
+                    cursor: "pointer",
+                    fontWeight: selectedActivityType === activity?.activity_type ? "bold" : "normal",
+                  }}
+                >
+                  {activity?.activity_type}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <SelectableOptions options={likesOptions} onAdd={handleAddLikeOption} onSelect={handleSelectLike} />
-      <SelectableOptions options={feelingOptions} onAdd={handleAddFeelingOption} onSelect={handleSelectFeeling} />
-      <PersonalizationOptions options={personalizationOptions} onAdd={handleAddLikeOption} onSelect={handleSelectPersonalization} />
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 4,marginBottom:3 }}>
-        <Button variant="contained" color="primary" className="w-full" onClick={handleSearch}>
-          Search
-        </Button>
-      </Box>
-      <BottomNavigation style={{ position: 'sticky', bottom: 0, zIndex: 100,borderTop:"1px solid" }}>
-        <BottomNavigationAction label="Home" icon={<HomeIcon />} />
-        <BottomNavigationAction label="Profile" icon={<PersonIcon />} />
-        <BottomNavigationAction label="History" icon={<HistoryIcon />} />
-      </BottomNavigation>
-    </div>
+          <SelectableOptions options={likesOptions} onAdd={handleAddLikeOption} onSelect={handleSelectLike} />
+          <SelectableOptions options={feelingOptions} onAdd={handleAddFeelingOption} onSelect={handleSelectFeeling} />
+          <PersonalizationOptions options={personalizationOptions} onAdd={handleAddLikeOption} onSelect={handleSelectPersonalization} />
+          <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 4, marginBottom: 3 }}>
+            <Button variant="contained" color="primary" className="w-full" onClick={handleSearch}>
+              Search
+            </Button>
+          </Box>
+          <BottomNavigation style={{ position: 'sticky', bottom: 0, zIndex: 100, borderTop: "1px solid" }}>
+            <BottomNavigationAction label="Home" icon={<HomeIcon />} />
+            <BottomNavigationAction label="Profile" icon={<PersonIcon />} />
+            <BottomNavigationAction label="History" icon={<HistoryIcon />} />
+          </BottomNavigation>
+        </div>
+      )}
+    </>
   );
+  
 }
