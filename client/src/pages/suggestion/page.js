@@ -2,8 +2,6 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../app/context/AuthContext";
 import {
-  Button,
-  TextField,
   Box,
   Typography,
   CircularProgress,
@@ -13,15 +11,14 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import TypingEffect from "../../app/components/TypingEffect";
-import CardComponent from "./cardComponent";
 
-const Page = () => {
+const Page = ({ prompt, cb }) => {
+  debugger
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [apiResponse, setApiResponse] = useState({});
+  const [apiResponse, setApiResponse] = useState("");
   const messagesEndRef = useRef(null);
   const router = useRouter();
 
@@ -37,19 +34,26 @@ const Page = () => {
     return () => clearTimeout(timeoutId);
   }, [user, router]);
 
-  const handleSendMessage = () => {
-    if (input.trim() === "") return;
+  useEffect(() => {
+    if (prompt) {
+      handleSendMessage(prompt);
+    }
+  }, [prompt]);
+
+  const handleSendMessage = (inputMessage) => {
+    console.log(inputMessage, "input message");
+    const message = inputMessage;
+    if (message.trim() === "") return;
 
     // Add user message to chat
-    setMessages([...messages, { sender: "user", text: input }]);
-    setInput("");
+    setMessages([...messages, { sender: "user", text: message }]);
     setIsTyping(true); // Show typing indicator
 
     // Fetch suggestion from API
     axios
       .post(
         "/ai/suggestions",
-        { prompt: input },
+        { prompt: message },
         {
           headers: {
             accepts: "application/json",
@@ -58,54 +62,22 @@ const Page = () => {
         }
       )
       .then((response) => {
-        const promptResp = response.data.content;
-        const formattedResponse = formatResponse(promptResp);
-        setApiResponse(formattedResponse);
+        setApiResponse(response.data.content);
 
         // Add empty message for typing effect and hide typing indicator
         setMessages([
           ...messages,
-          { sender: "user", text: input },
+          { sender: "user", text: message },
           { sender: "model", text: "" },
         ]);
         setIsTyping(false);
+        cb(true); // Call the callback with true to indicate successful response
       })
       .catch((error) => {
         setIsTyping(false);
+        cb(false); // Call the callback with false to indicate error
         console.error("Error:", error);
       });
-  };
-
-  const formatResponse = (response) => {
-    const places = [];
-    const sections = response.split("\n\n");
-
-    sections.forEach((section) => {
-      const lines = section.split("\n");
-      if (lines.length > 1) {
-        const place = {};
-        place.name = lines[0].replace("**", "").replace("**", "").trim();
-        lines.forEach((line) => {
-          if (line.includes("**Budget:**")) {
-            place.budget = line.replace("**Budget:**", "").trim();
-          } else if (line.includes("**Distance:**")) {
-            place.distance = line.replace("**Distance:**", "").trim();
-          } else if (line.includes("**Reviews:**")) {
-            place.reviews = line.replace("**Reviews:**", "").trim();
-          } else if (line.includes("**Images:**")) {
-            place.images_search = line
-              .replace('**Images:** [You can search for "', "")
-              .replace('" on Google Images]', "")
-              .trim();
-          } else if (line.includes("**Google Maps:**")) {
-            place.google_maps = line.match(/\(([^)]+)\)/)[1];
-          }
-        });
-        places.push(place);
-      }
-    });
-
-    return { places };
   };
 
   const handleTypingComplete = () => {
@@ -114,26 +86,10 @@ const Page = () => {
     }
   };
 
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      handleSendMessage();
-    }
-  };
-
   const renderCards = () => {
-    if (!apiResponse.places || apiResponse.places.length === 0) return null;
-  
-    const filteredPlaces = apiResponse.places.filter(
-      place => place.name && place.distance && place.reviews
-    );
-  
-    if (filteredPlaces.length === 0) return null;
-  
-    return filteredPlaces.map((place, index) => (
-      <CardComponent key={index} place={place} />
-    ));
+    if (!apiResponse) return null;
+    return <Typography>{apiResponse}</Typography>;
   };
-  
 
   return (
     <Fragment>
@@ -199,30 +155,8 @@ const Page = () => {
                   </Box>
                 )}
                 {/* Render cards on top of the input field */}
-                {apiResponse.places && (
-                  <Box className="flex flex-wrap mt-4">{renderCards()}</Box>
-                )}
+                <Box className="flex flex-wrap mt-4">{renderCards()}</Box>
                 <div ref={messagesEndRef} />
-              </Box>
-              <Box className="flex items-end mt-4">
-                <TextField
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  variant="outlined"
-                  fullWidth
-                  placeholder="Type a message..."
-                  className="mr-2"
-                  onKeyDown={handleKeyPress}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSendMessage}
-                  disabled={isTyping}
-                >
-                  Send
-                </Button>
               </Box>
             </Fragment>
           ) : (
