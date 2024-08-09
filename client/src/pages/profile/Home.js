@@ -273,7 +273,7 @@ export default function Home() {
               Let's Go
             </Button>
           </Box>
-          <BottomNavigation
+          {/* <BottomNavigation
             style={{
               position: "sticky",
               bottom: 0,
@@ -284,7 +284,7 @@ export default function Home() {
             <BottomNavigationAction label="Home" icon={<HomeIcon />} />
             <BottomNavigationAction label="Profile" icon={<PersonIcon />} />
             <BottomNavigationAction label="History" icon={<HistoryIcon />} />
-          </BottomNavigation>
+          </BottomNavigation> */}
         </div>
       )}
     </>
