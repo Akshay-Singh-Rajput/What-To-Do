@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import LocationSearchBar from "../../app/components/LocationSearchBar";
 import SelectableOptions from "../../app/components/SelectableOptions";
 import PersonalizationOptions from "../../app/components/PersonalizationOptions";
+import TripOptions from "../../app/components/TripOptions"; // Import the TripOptions component
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -12,7 +13,6 @@ import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import HistoryIcon from "@mui/icons-material/History";
 import Page from "../suggestion/page";
-import { useContext } from 'react';
 import { ThemeContext } from "@emotion/react"; 
 
 export default function Home() {
@@ -21,35 +21,18 @@ export default function Home() {
   const [selectedLikeOption, setSelectedLikeOption] = useState(null);
   const [selectedFeelingOption, setSelectedFeelingOption] = useState(null);
   const [prompt, setPrompt] = useState("");
-  const initialPersonalizationOptions = [
-    { label: "Distance", value: "5" },
-    { label: "Gender", value: "All" },
-    { label: "Age", value: "18-45" },
-  ];
-  const [selectedLikes, setSelectedLikes] = useState([]);
-  const [selectedFeelings, setSelectedFeelings] = useState([]);
   const { theme } = useContext(ThemeContext); 
   const [payload, setPayload] = useState({});
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showRecommendation, setShowRecommendations] = useState(false);
 
-  const [activityType, setActivityType] = useState([
-    {
-      activity_type: "Both",
-      activity_img:
-        "https://images.unsplash.com/photo-1607537826539-0eb279b56804?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fG91dGRvb3IlMjBhY3Rpdml0aWVzfGVufDB8fDB8fHww",
-    },
-    {
-      activity_type: "Indoor",
-      activity_img:
-        "https://media.istockphoto.com/id/682635620/photo/seniors-playing-dominoes.jpg?s=612x612&w=0&k=20&c=NBZeQUuzjAnLu9Dh61gzulrlX2XegJohecspCAhwp9k=",
-    },
-    {
-      activity_type: "Outdoor",
-      activity_img:
-        "https://www.shutterstock.com/shutterstock/photos/1894236736/display_1500/stock-vector-family-different-autumn-holiday-traditions-and-celebrations-set-people-characters-parents-1894236736.jpg",
-    },
-  ]);
+  const [selectedBudget, setSelectedBudget] = useState(null); // New state for selected budget
+  const [selectedCompanion, setSelectedCompanion] = useState(null); // New state for selected companion
+  const activityType = [
+    { activity_type: "Both" },
+    { activity_type: "Outdoor" },
+    { activity_type: "Indoor" },
+  ];
 
   const outdoorActivities = [
     "Hiking",
@@ -76,37 +59,23 @@ export default function Home() {
     "Trivia Night",
   ];
   const bothActivities = [
-    "Board Games",
-    "Cooking/Baking",
-    "Movie Marathon",
-    "Video Games",
-    "Puzzle Solving",
-    "DIY Crafts",
-    "Book Club",
-    "Karaoke",
-    "Escape Room",
-    "Trivia Night",
-    "Hiking",
-    "Picnicking",
-    "Biking",
-    "Camping",
-    "Beach Day",
-    "Sports",
-    "Running/Jogging",
-    "Fishing",
-    "Kayaking/Canoeing",
-    "Gardening",
+    ...indoorActivities,
+    ...outdoorActivities
   ];
   const initialFeelingOptions = ["Happy", "Relax", "Inspired", "Stressed"];
-  const [selectedPersonalization, setSelectedPersonalization] = useState(
-    initialPersonalizationOptions
-  );
-  const [personalizationOptions, setPersonalizationOptions] = useState(
-    initialPersonalizationOptions
-  );
+  const initialPersonalizationOptions = [
+    { label: "Distance", value: "5" },
+    { label: "Gender", value: "All" },
+    { label: "Age", value: "18-45" },
+  ];
+
+  const [selectedPersonalization, setSelectedPersonalization] = useState(initialPersonalizationOptions);
+  const [personalizationOptions, setPersonalizationOptions] = useState(initialPersonalizationOptions);
   const [feelingOptions, setFeelingOptions] = useState(initialFeelingOptions);
   const [selectedActivities, setSelectedActivities] = useState(bothActivities);
   const [likesOptions, setLikesOptions] = useState(bothActivities);
+  const [selectedLikes, setSelectedLikes] = useState([]);
+  const [selectedFeelings, setSelectedFeelings] = useState([]);
 
   useEffect(() => {
     if (prompt) {
@@ -126,7 +95,7 @@ export default function Home() {
     } else if (value === "Indoor") {
       setSelectedActivities(indoorActivities);
     } else {
-      setSelectedActivities([...indoorActivities, ...outdoorActivities]);
+      setSelectedActivities(bothActivities);
     }
   };
 
@@ -173,6 +142,8 @@ export default function Home() {
       selectedFeelings,
       personalizationOptions,
       location,
+      budget, // Add budget to the prompt
+      companion, // Add companion to the prompt
     } = payload;
 
     const likesText =
@@ -187,12 +158,16 @@ export default function Home() {
       .join(", ");
 
     const locationText = location ? `near ${location}` : "anywhere";
+    const budgetText = budget ? budget.label : "any budget";
+    const companionText = companion ? companion.label : "no companion preference";
 
     return `Hey, I am looking for recommendations for activities that match the following details: 
       - Likes: ${likesText}
       - Feelings: ${feelingsText}
       - Personalization options: ${optionsText}
       - Location: ${locationText}
+      - Budget: ${budgetText}
+      - Companion: ${companionText}
       Can you suggest some options?`;
   };
 
@@ -202,6 +177,8 @@ export default function Home() {
       selectedFeelings,
       personalizationOptions: selectedPersonalization,
       location: selectedLocation?.formatted_address,
+      budget: selectedBudget, // Add budget to the payload
+      companion: selectedCompanion, // Add companion to the payload
     };
     setPayload(newPayload);
     const newPrompt = createPrompt(newPayload);
@@ -223,7 +200,7 @@ export default function Home() {
             />
           </div>
           <div className="flex flex-col gap-4 py-4">
-            <div className="text-xl font-semibold">I'm interested in</div>
+            <div className="text-lg leading-5">I'm interested in</div>
             <div
               className={`flex items-center justify-between rounded-full p-1 ${
                 theme === "dark" ? "bg-gray-800" : "bg-gray-400"
@@ -250,23 +227,35 @@ export default function Home() {
               ))}
             </div>
           </div>
+         <div>
+          <div className="text-lg leading-9">What do you like ?</div>
+         
           <SelectableOptions
             selectedOptions={selectedLikes}
             options={likesOptions}
             onAdd={handleAddLikeOption}
             onSelect={handleSelectLike}
           />
+          </div>
+          <div>
+        <div className="text-xl font-base leading-5">  How is your mood today?</div>
           <SelectableOptions
             selectedOptions={selectedFeelings}
             options={feelingOptions}
             onAdd={handleAddFeelingOption}
             onSelect={handleSelectFeeling}
           />
+          </div>
+           <TripOptions 
+            onSelectBudget={setSelectedBudget} 
+            onSelectCompanion={setSelectedCompanion} 
+          />
           <PersonalizationOptions
             options={personalizationOptions}
             onAdd={handleAddLikeOption}
             onSelect={handleSelectPersonalization}
           />
+       
           <Box
             sx={{
               display: "flex",
@@ -284,7 +273,7 @@ export default function Home() {
               Let's Go
             </Button>
           </Box>
-          <BottomNavigation
+          {/* <BottomNavigation
             style={{
               position: "sticky",
               bottom: 0,
@@ -295,7 +284,7 @@ export default function Home() {
             <BottomNavigationAction label="Home" icon={<HomeIcon />} />
             <BottomNavigationAction label="Profile" icon={<PersonIcon />} />
             <BottomNavigationAction label="History" icon={<HistoryIcon />} />
-          </BottomNavigation>
+          </BottomNavigation> */}
         </div>
       )}
     </>
