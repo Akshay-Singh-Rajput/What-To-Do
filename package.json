@@ -1,0 +1,12 @@
+{
+  "name": "what-to-do",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev":"(cd server && start npm run start) & (cd ../client && start npm run dev)"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
