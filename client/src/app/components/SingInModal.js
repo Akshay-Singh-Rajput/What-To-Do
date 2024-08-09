@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dialog, IconButton, Typography, Card, CardContent, CircularProgress, Divider, Button } from '@mui/material';
 import { styled } from '@mui/system';
 import { Google } from '@mui/icons-material';
@@ -43,6 +43,13 @@ const SignInModal = ({ open, onClose }) => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (user){
+            onClose()
+        }
+        console.log({ user })
+    }, [ user ])
 
     return (
         <Dialog open={ open } onClose={ onClose } PaperComponent={ PaperStyled } fullWidth maxWidth="sm">
