@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Chip, Box, Typography, TextField, Button } from "@mui/material";
 
-const SelectableOptions = ({ title, options, onAdd, onSelect, selectedOption }) => {
+const SelectableOptions = ({ title, options, onAdd, onSelect, selectedOptions }) => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
@@ -31,11 +31,10 @@ const SelectableOptions = ({ title, options, onAdd, onSelect, selectedOption }) 
             label={option}
             clickable
             onClick={() => onSelect(option)}
-            // sx={{
-            //   backgroundColor:
-            //     selectedOption === option ? "white" : "grey",
-            //   color: selectedOption === option ? "white" : "black",
-            // }}
+            sx={{
+              backgroundColor: selectedOptions?.includes(option) ? "blue" : "grey",
+              color: selectedOptions?.includes(option) ? "white" : "black",
+            }}
           />
         ))}
         {showInput ? (
