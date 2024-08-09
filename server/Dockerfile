@@ -2,7 +2,7 @@
 FROM node:18
 
 # Create app directory
-WORKDIR index.js
+WORKDIR /app
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
@@ -14,6 +14,6 @@ RUN npm install
 COPY . .
 
 # Expose the port
-EXPOSE 3000
+EXPOSE 8080
 
-CMD [ "node", "index.js" ]
+CMD [ "node", "server.js" ]
