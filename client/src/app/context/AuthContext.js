@@ -41,9 +41,7 @@ export const AuthContextProvider = ({ children }) => {
             }
         }).then(response => {
             setUser(response.data);
-            if ([ "/", "/login", "/signup" ].includes(pathname)) {
-                router.push('/');
-            }
+            router.push('/');
         }).catch(error => {
 
         });
