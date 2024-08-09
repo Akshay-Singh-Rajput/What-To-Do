@@ -149,7 +149,7 @@ export default function Header() {
       </Toolbar>
 
       <>
-        <SingInModal open={ showSignInPopUp } onClose={ () => setShowSignInPopUp(false) } />
+     {  !user && <SingInModal open={ showSignInPopUp } onClose={ () => setShowSignInPopUp(false) } />}
       </>
     </AppBar>
   );
