@@ -6,6 +6,7 @@ import ThemeToggle from "./ThemeToggle";
 import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemText, ListItemIcon, useMediaQuery, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SingInModal from "./SingInModal";
 
 export default function Header() {
   const [ navbarOpen, setNavbarOpen ] = useState(false);
@@ -13,6 +14,7 @@ export default function Header() {
   const router = useRouter();
   const isMobile = useMediaQuery('(max-width:600px)');
   const isLargeScreen = useMediaQuery('(min-width: 960px)');
+  const [ showSignInPopUp, setShowSignInPopUp ] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -22,6 +24,10 @@ export default function Header() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleSignInClick = () => {
+    setShowSignInPopUp(true);
   };
 
   useEffect(() => {
@@ -41,11 +47,11 @@ export default function Header() {
       <Toolbar className="justify-between gap-8">
         <Typography variant="h6" component="div">
           <Link href="/" className="flex text-3xl text-white font-medium md:mb-0">
-          <img className="h-12 w-24" src="/tripwiser-high-resolution-logo-white-transparent.png"/>
+            <img className="h-12 w-24" src="/tripwiser-high-resolution-logo-white-transparent.png" />
           </Link>
         </Typography>
 
-        <Box className={ `flex items-center ${isLargeScreen ? 'gap-8' : 'gap-2'}`}>
+        <Box className={ `flex items-center ${isLargeScreen ? 'gap-8' : 'gap-2'}` }>
           { !isLargeScreen ? (
             <IconButton
               edge="start"
@@ -65,22 +71,23 @@ export default function Header() {
                       <Link href="/suggestion/page" passHref>
                         <Typography variant="body1" className="cursor-pointer text-white font-semibold">Suggestion</Typography>
                       </Link>
-                        <Link href="/profile/page" passHref>
-                          <Typography variant="body1" className="cursor-pointer text-white font-semibold">Profile</Typography>
-                        </Link>
-                        <Link href="/profile/Home" passHref>
-                          <Typography variant="body1" className="cursor-pointer text-white font-semibold">Home</Typography>
-                        </Link>
+                      <Link href="/profile/page" passHref>
+                        <Typography variant="body1" className="cursor-pointer text-white font-semibold">Profile</Typography>
+                      </Link>
+                      <Link href="/profile/Home" passHref>
+                        <Typography variant="body1" className="cursor-pointer text-white font-semibold">Home</Typography>
+                      </Link>
                       <Typography variant="body1" className="cursor-pointer text-white font-semibold" onClick={ handleSignOut }>Sign Out</Typography>
                     </>
                   ) : (
                     <>
-                      <Link href="/login" passHref>
-                        <Typography variant="body1" className="cursor-pointer text-white font-semibold">Log In</Typography>
-                      </Link>
+                      <Typography variant="body1" className="cursor-pointer text-white font-semibold" onClick={ handleSignInClick }>Sing In</Typography>
+                      {/* <Link href="/login" passHref>
+                        <Typography variant="body1" className="cursor-pointer text-white font-semibold">Sing In</Typography>
+                      </Link>            
                       <Link href="/signup" passHref>
                         <Typography variant="body1" className="cursor-pointer text-white font-semibold">Sign Up</Typography>
-                      </Link>
+                      </Link> */}
                     </>
                   ) }
                 </div>
@@ -105,7 +112,7 @@ export default function Header() {
                 </>
               ) : (
                 <>
-                  <ListItem button>
+                  {/* <ListItem button>
                     <Link href="/login" passHref>
                       <ListItemText primary="Log In" />
                     </Link>
@@ -114,7 +121,11 @@ export default function Header() {
                     <Link href="/signup" passHref>
                       <ListItemText primary="Sign Up" />
                     </Link>
-                  </ListItem>
+                  </ListItem> */}
+
+                    <ListItem button onClick={ handleSignInClick }>
+                        <ListItemText primary="Sing In" />
+                    </ListItem>
                 </>
               ) }
               <ListItem button>
@@ -136,6 +147,10 @@ export default function Header() {
         </Box>
 
       </Toolbar>
+
+      <>
+        <SingInModal open={ showSignInPopUp } onClose={ () => setShowSignInPopUp(false) } />
+      </>
     </AppBar>
   );
 }
