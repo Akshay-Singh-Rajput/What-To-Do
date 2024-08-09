@@ -13,7 +13,6 @@ import { useRouter } from "next/router";
 import TypingEffect from "../../app/components/TypingEffect";
 
 const Page = ({ prompt, cb }) => {
-  debugger
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
