@@ -16,6 +16,7 @@ const signup = () => {
     const router = useRouter();
 
     const handleSignup = (e) => {
+        debugger
         e.preventDefault();
         if (!name.trim() || !email.trim() || !password.trim()) {
             setError('Please fill in all fields');
@@ -36,6 +37,7 @@ const signup = () => {
             alert(response.data.message);
             router.push('/login');
         }).catch(error => {
+            debugger
             alert(error.response.data.error);
         });
 
