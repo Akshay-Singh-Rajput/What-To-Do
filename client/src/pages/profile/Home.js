@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import LocationSearchBar from "../../app/components/LocationSearchBar";
 import SelectableOptions from "../../app/components/SelectableOptions";
 import PersonalizationOptions from "../../app/components/PersonalizationOptions";
-import TripOptions from "../../app/components/TripOptions"; // Import the TripOptions component
+import TripOptions from "../../app/components/TripOptions"; 
 import {
   BottomNavigation,
   BottomNavigationAction,

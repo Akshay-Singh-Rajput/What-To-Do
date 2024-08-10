@@ -10,7 +10,6 @@ import {
   ListItem,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import TypingEffect from "../../app/components/TypingEffect";
 import RecommendationCard from "./RecommendationCard";
 
 const Page = ({ prompt, cb }) => {
@@ -127,7 +126,7 @@ const Page = ({ prompt, cb }) => {
               <Box className="flex-1 overflow-y-auto mb-4 pr-4">
                 {isTyping && (
                   <Box className="max-w-xs bg-gray-200 text-black rounded-lg p-2 my-1 self-start">
-                    <Typography>Wait for the response...</Typography>
+                    <Typography>Wait for the adventure...</Typography>
                   </Box>
                 )}
                 <Box className="flex flex-wrap mt-4">{renderCards()}</Box>
