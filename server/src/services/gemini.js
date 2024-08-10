@@ -24,9 +24,9 @@ async function generateAiContent(email, prompt) {
             createChatInstance(email);
         }
         const chat = chatInstances[ email ];
-        const result = await chat.sendMessage(prompt);
+        // const result = await chat.sendMessage(prompt);
 
-        // const result = await model.generateContent(prompt);
+        const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = await response.text();
         return text;

@@ -9,23 +9,23 @@ const LandingPage = () => {
     const { user } = useAuth();
     const theme = useTheme();
     const { themeMode } = useThemeContext();
-    const [isOpenModal, setIsOpenModal] = useState(false)
+    const [ isOpenModal, setIsOpenModal ] = useState(false);
 
     const textColor = theme.palette.text.primary;
     const isDarkMode = themeMode === 'dark';
 
     const introTextColor = isDarkMode ? 'text-white' : 'text-black';
     const introBackgroundColor = isDarkMode ? 'bg-gray-900' : 'bg-gray-100';
-    
-    useMemo(()=>{
-   setIsOpenModal(true)
-    },[isOpenModal])
+
+    //     useMemo(()=>{
+    //    setIsOpenModal(true)
+    //     },[isOpenModal])
 
 
 
     return (
         <Container maxWidth="lg" className={ `${introBackgroundColor}` }>
-            <SwipeableEdgeDrawer isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
+            <SwipeableEdgeDrawer open={ isOpenModal } setOpen={ setIsOpenModal } />
             <div className={ `min-h-screen flex flex-col items-center justify-center ${introBackgroundColor}` }>
                 <Typography variant="h2" component="h1" gutterBottom className={ introTextColor }>
                     Welcome { user?.displayName } to WhatToDo!
@@ -33,11 +33,9 @@ const LandingPage = () => {
                 <Typography variant="h5" gutterBottom sx={ { color: textColor } } className='text-center'>
                     Discover your perfect plan with WhatToDo! Personalized activities tailored to your mood, budget, location, group, age, and more. Start exploring now!
                 </Typography>
-                <Link href="/suggestion/page" className='mt-2'>
-                    <Button variant="contained" color="primary">
-                        Explore Now
-                    </Button>
-                </Link>
+                <Button variant="contained" color="primary" className='mt-2' onClick={ () => setIsOpenModal(true) }>
+                    get started
+                </Button>
             </div>
             <Box my={ 6 } className={ introTextColor }>
                 <Typography variant="h4" component="h2" align="center" gutterBottom>

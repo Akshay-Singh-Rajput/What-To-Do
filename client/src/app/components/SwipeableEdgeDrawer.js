@@ -18,37 +18,37 @@ const Root = styled("div")(({ theme }) => ({
   height: "100%",
   backgroundColor:
     theme.palette.mode === "light"
-      ? grey[100]
+      ? grey[ 100 ]
       : theme.palette.background.default,
 }));
 
 const StyledBox = styled("div")(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "light" ? "#fff" : grey[800],
+  backgroundColor: theme.palette.mode === "light" ? "#fff" : grey[ 800 ],
 }));
 
 function SwipeableEdgeDrawer(props) {
-  const { window, isOpen } = props;
-  const [open, setOpen] = useState(isOpen);
-  const [selectedOption, setSelectedOption] = useState("A couple");
-  const [travelDistance, setTravelDistance] = useState("");
-  const [finalData, setFinalData] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
-  const [prompt, setPrompt] = useState("");
-  const [currentPage, setCurrentPage] = useState("initial"); 
-  const [personalizationOptions, setPersonalizationOptions] = useState([
+  const { window, isOpen, open, setOpen } = props;
+  // const [open, setOpen] = useState(isOpen);
+  const [ selectedOption, setSelectedOption ] = useState("A couple");
+  const [ travelDistance, setTravelDistance ] = useState("");
+  const [ finalData, setFinalData ] = useState("");
+  const [ selectedLocation, setSelectedLocation ] = useState("");
+  const [ prompt, setPrompt ] = useState("");
+  const [ currentPage, setCurrentPage ] = useState("initial");
+  const [ personalizationOptions, setPersonalizationOptions ] = useState([
     { label: "Distance", value: "5" },
   ]);
-  const [selectedPersonalization, setSelectedPersonalization] = useState(
+  const [ selectedPersonalization, setSelectedPersonalization ] = useState(
     personalizationOptions
   );
 
-  const apiKey = "AIzaSyD55Jf-yj3s7jUla7VnaVSU6HyH2doHBWs"; 
+  const apiKey = "AIzaSyD55Jf-yj3s7jUla7VnaVSU6HyH2doHBWs";
 
   useEffect(() => {
     if (prompt) {
-      setCurrentPage("recommendations"); 
+      setCurrentPage("recommendations");
     }
-  }, [prompt]);
+  }, [ prompt ]);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -82,7 +82,7 @@ function SwipeableEdgeDrawer(props) {
 
   const handleTripDetails = () => {
     const payload = {
-      location: selectedLocation?.formatted_address || "anywhere",
+      location: selectedLocation?.formatted_address || "India",
       numOfPeople: selectedOption,
       travelDistance: travelDistance || "any distance",
     };
@@ -97,28 +97,28 @@ function SwipeableEdgeDrawer(props) {
     setSelectedPersonalization((prev) => {
       const existingIndex = prev.findIndex((opt) => opt.label === option.label);
       if (existingIndex >= 0) {
-        const newArray = [...prev];
-        newArray[existingIndex] = option;
+        const newArray = [ ...prev ];
+        newArray[ existingIndex ] = option;
         return newArray;
       } else {
-        return [...prev, option];
+        return [ ...prev, option ];
       }
     });
   };
 
   const handleShowAdvancePreferences = () => {
-    setCurrentPage("personalization"); 
+    setCurrentPage("personalization");
   };
 
   const handleBack = () => {
-    setCurrentPage("initial"); 
+    setCurrentPage("initial");
   };
 
   return (
     <Root>
       <CssBaseline />
       <Global
-        styles={{
+        styles={ {
           ".MuiDrawer-root > .MuiPaper-root": {
             height: drawerHeight,
             overflow: "visible",
@@ -126,25 +126,25 @@ function SwipeableEdgeDrawer(props) {
             zIndex: 10,
             borderRadius: "20px",
           },
-        }}
+        } }
       />
-      <Box sx={{ textAlign: "center", pt: 1 }}>
+      {/* <Box sx={{ textAlign: "center", pt: 1 }}>
         <Button onClick={toggleDrawer(true)}>Get Modal</Button>
-      </Box>
+      </Box> */}
       <SwipeableDrawer
-        container={container}
+        container={ container }
         anchor="bottom"
-        open={open}
-        onClose={toggleDrawer(false)}
-        onOpen={toggleDrawer(true)}
-        swipeAreaWidth={drawerBleeding}
-        disableSwipeToOpen={false}
-        ModalProps={{
+        open={ open }
+        onClose={ toggleDrawer(false) }
+        onOpen={ toggleDrawer(true) }
+        swipeAreaWidth={ Number(drawerBleeding) }
+        disableSwipeToOpen={ false }
+        ModalProps={ {
           keepMounted: true,
-        }}
+        } }
       >
         <StyledBox
-          sx={{
+          sx={ {
             position: "absolute",
             top: -drawerBleeding,
             borderTopLeftRadius: 16,
@@ -152,10 +152,10 @@ function SwipeableEdgeDrawer(props) {
             visibility: "visible",
             right: 0,
             left: 0,
-          }}
+          } }
         />
         <StyledBox
-          sx={{
+          sx={ {
             px: 2,
             pb: 2,
             pt: 6,
@@ -163,46 +163,45 @@ function SwipeableEdgeDrawer(props) {
             overflow: "auto",
             borderTopLeftRadius: "16px",
             borderTopRightRadius: "16px",
-          }}
+          } }
         >
-          {currentPage !== "initial" && (
-            <Button onClick={handleBack}>Back</Button>
-          )}
-          {currentPage === "recommendations" ? (
-            <Page prompt={prompt} cb={setCurrentPage} />
+          { currentPage !== "initial" && (
+            <Button onClick={ handleBack }>Back</Button>
+          ) }
+          { currentPage === "recommendations" ? (
+            <Page prompt={ prompt } cb={ setCurrentPage } />
           ) : currentPage === "personalization" ? (
             <div>
               <Home />
             </div>
           ) : (
             <div className="relative flex size-full flex-col justify-between group/design-root overflow-x-hidden">
-              <div className="flex justify-center text-2xl font-semibold">
-                Explore
+              <div className="flex justify-center text-2xl font-semibold  mb-20">
+                Plan your trip 
               </div>
               <div className="px-4 py-3 mb-10">
                 <LocationSearchBar
-                  apiKey={apiKey}
-                  onPlaceSelected={handlePlaceSelected}
+                  apiKey={ apiKey }
+                  onPlaceSelected={ handlePlaceSelected }
                 />
               </div>
               <div className="text-base font-medium  mb-2">Travel Partner</div>
               <div className="flex flex-col px-4 py-4 mb-4 border-slate-600 border rounded-lg shadow-sm ">
                 <div className="group flex-1">
-                  {["Just me", "A couple", "Family", "Friends"].map(
+                  { [ "Just me", "A couple", "Family", "Friends" ].map(
                     (option) => (
                       <p
-                        key={option}
-                        className={`text-sm w-full font-bold leading-normal tracking-[0.015em] flex h-11 items-center justify-center truncate px-4 text-center group-[:first-child]:rounded-l-full group-[:last-child]:rounded-r-full ${
-                          selectedOption === option
+                        key={ option }
+                        className={ `text-sm w-full font-bold leading-normal tracking-[0.015em] flex h-11 items-center justify-center truncate px-4 text-center group-[:first-child]:rounded-l-full group-[:last-child]:rounded-r-full ${selectedOption === option
                             ? "text-white bg-slate-400"
                             : ""
-                        }`}
-                        onClick={() => handleOptionClick(option)}
+                          }` }
+                        onClick={ () => handleOptionClick(option) }
                       >
-                        {option}
+                        { option }
                       </p>
                     )
-                  )}
+                  ) }
                 </div>
               </div>
               <div className="flex flex-wrap items-end gap-4 px-4 py-3">
@@ -214,8 +213,8 @@ function SwipeableEdgeDrawer(props) {
                     <input
                       placeholder="50 kms"
                       className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl focus:outline-0 focus:ring-0 border-none bg-gray-100 focus:border-none h-14 placeholder:text-gray-500 p-4 rounded-r-none border-r-0 pr-2 text-black font-normal leading-normal"
-                      value={travelDistance}
-                      onChange={handleInputChange}
+                      value={ travelDistance }
+                      onChange={ handleInputChange }
                     />
                     <div
                       className="text-gray-500 flex border-none bg-gray-100 items-center justify-center pr-4 rounded-r-xl border-l-0"
@@ -239,7 +238,7 @@ function SwipeableEdgeDrawer(props) {
                   variant="contained"
                   color="primary"
                   className="bg-blue-800 text-white h-14 w-14 p-0 flex items-center justify-center rounded-lg hover:bg-black text-sm"
-                  onClick={handleTripDetails}
+                  onClick={ handleTripDetails }
                 >
                   Next
                 </Button>
@@ -247,7 +246,7 @@ function SwipeableEdgeDrawer(props) {
               <div className="mt-5">
                 <Typography>Advance Personalization</Typography>
                 <Button
-                  onClick={handleShowAdvancePreferences}
+                  onClick={ handleShowAdvancePreferences }
                   variant="contained"
                   color="primary"
                 >
@@ -255,7 +254,7 @@ function SwipeableEdgeDrawer(props) {
                 </Button>
               </div>
             </div>
-          )}
+          ) }
         </StyledBox>
       </SwipeableDrawer>
     </Root>
