@@ -16,7 +16,7 @@ import Page from "../suggestion/page";
 import { ThemeContext } from "@emotion/react"; 
 
 export default function Home() {
-  const apiKey = "AIzaSyD55Jf-yj3s7jUla7VnaVSU6HyH2doHBWs"; // Gemini Api key
+  const apiKey = "AIzaSyD55Jf-yj3s7jUla7VnaVSU6HyH2doHBWs"; 
   const [selectedActivityType, setSelectedActivityType] = useState("Both");
   const [selectedLikeOption, setSelectedLikeOption] = useState(null);
   const [selectedFeelingOption, setSelectedFeelingOption] = useState(null);
@@ -26,8 +26,8 @@ export default function Home() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showRecommendation, setShowRecommendations] = useState(false);
 
-  const [selectedBudget, setSelectedBudget] = useState(null); // New state for selected budget
-  const [selectedCompanion, setSelectedCompanion] = useState(null); // New state for selected companion
+  const [selectedBudget, setSelectedBudget] = useState(null); 
+  const [selectedCompanion, setSelectedCompanion] = useState(null); 
   const activityType = [
     { activity_type: "Both" },
     { activity_type: "Outdoor" },
@@ -142,8 +142,8 @@ export default function Home() {
       selectedFeelings,
       personalizationOptions,
       location,
-      budget, // Add budget to the prompt
-      companion, // Add companion to the prompt
+      budget, 
+      companion, 
     } = payload;
 
     const likesText =
@@ -177,8 +177,8 @@ export default function Home() {
       selectedFeelings,
       personalizationOptions: selectedPersonalization,
       location: selectedLocation?.formatted_address,
-      budget: selectedBudget, // Add budget to the payload
-      companion: selectedCompanion, // Add companion to the payload
+      budget: selectedBudget, 
+      companion: selectedCompanion, 
     };
     setPayload(newPayload);
     const newPrompt = createPrompt(newPayload);
@@ -273,18 +273,7 @@ export default function Home() {
               Let's Go
             </Button>
           </Box>
-          {/* <BottomNavigation
-            style={{
-              position: "sticky",
-              bottom: 0,
-              zIndex: 100,
-              borderTop: "1px solid",
-            }}
-          >
-            <BottomNavigationAction label="Home" icon={<HomeIcon />} />
-            <BottomNavigationAction label="Profile" icon={<PersonIcon />} />
-            <BottomNavigationAction label="History" icon={<HistoryIcon />} />
-          </BottomNavigation> */}
+         
         </div>
       )}
     </>

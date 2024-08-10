@@ -11,14 +11,13 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import TypingEffect from "../../app/components/TypingEffect";
+import RecommendationCard from "./RecommendationCard";
 
 const Page = ({ prompt, cb }) => {
   const { user } = useAuth();
-  const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [loading, setLoading] = useState(true);
   const [apiResponse, setApiResponse] = useState("");
-  const messagesEndRef = useRef(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -40,19 +39,14 @@ const Page = ({ prompt, cb }) => {
   }, [prompt]);
 
   const handleSendMessage = (inputMessage) => {
-    console.log(inputMessage, "input message");
-    const message = inputMessage;
-    if (message.trim() === "") return;
+    if (inputMessage.trim() === "") return;
 
-    // Add user message to chat
-    setMessages([...messages, { sender: "user", text: message }]);
-    setIsTyping(true); // Show typing indicator
+    setIsTyping(true);
 
-    // Fetch suggestion from API
     axios
       .post(
         "/ai/suggestions",
-        { prompt: message },
+        { prompt: inputMessage },
         {
           headers: {
             accepts: "application/json",
@@ -62,32 +56,47 @@ const Page = ({ prompt, cb }) => {
       )
       .then((response) => {
         setApiResponse(response.data.content);
-
-        // Add empty message for typing effect and hide typing indicator
-        setMessages([
-          ...messages,
-          { sender: "user", text: message },
-          { sender: "model", text: "" },
-        ]);
         setIsTyping(false);
-        cb(true); // Call the callback with true to indicate successful response
+        cb(true);
       })
       .catch((error) => {
         setIsTyping(false);
-        cb(false); // Call the callback with false to indicate error
+        cb(false);
         console.error("Error:", error);
       });
   };
 
-  const handleTypingComplete = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+  const parseResponse = (response) => {
+    const cardsData = [];
+    const sections = response.split("\n\n");
+
+    sections.forEach((section) => {
+      const lines = section.split("\n");
+      if (lines.length > 1) {
+        const titleLine = lines[0];
+        const contentLines = lines.slice(1);
+
+        if (titleLine.includes("**")) {
+          const title = titleLine.replace(/\*\*/g, "").trim();
+          const description = contentLines.join(" ").trim();
+          cardsData.push({ title, description });
+        }
+      }
+    });
+
+    return cardsData;
   };
 
   const renderCards = () => {
-    if (!apiResponse) return null;
-    return <Typography>{apiResponse}</Typography>;
+    const cardsData = parseResponse(apiResponse);
+
+    return cardsData.map((card, index) => (
+      <RecommendationCard
+        key={index}
+        title={card.title}
+        description={card.description}
+      />
+    ));
   };
 
   return (
@@ -116,46 +125,12 @@ const Page = ({ prompt, cb }) => {
           ) : user ? (
             <Fragment>
               <Box className="flex-1 overflow-y-auto mb-4 pr-4">
-                {/* Render user and model messages */}
-                {messages.map((message, index) => (
-                  <Box
-                    key={index}
-                    className={`flex ${
-                      message.sender === "user"
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
-                    <Box
-                      className="max-w-[90%] rounded-lg py-2 px-4 my-1"
-                      sx={{
-                        backgroundColor:
-                          message.sender === "user"
-                            ? "primary.main"
-                            : "grey.200",
-                        color: message.sender === "user" ? "white" : "black",
-                        textAlign: message.sender === "user" ? "right" : "left",
-                      }}
-                    >
-                      {message.sender === "user" ? (
-                        message.text
-                      ) : (
-                        <TypingEffect
-                          text={message.text}
-                          onTypingComplete={handleTypingComplete}
-                        />
-                      )}
-                    </Box>
-                  </Box>
-                ))}
                 {isTyping && (
                   <Box className="max-w-xs bg-gray-200 text-black rounded-lg p-2 my-1 self-start">
-                    <TypingEffect text="Typing..." />
+                    <Typography>Wait for the response...</Typography>
                   </Box>
                 )}
-                {/* Render cards on top of the input field */}
                 <Box className="flex flex-wrap mt-4">{renderCards()}</Box>
-                <div ref={messagesEndRef} />
               </Box>
             </Fragment>
           ) : (
