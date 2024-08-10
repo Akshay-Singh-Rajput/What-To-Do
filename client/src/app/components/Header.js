@@ -7,6 +7,7 @@ import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListIt
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SingInModal from "./SingInModal";
+import ProfileBox from "./ProfileBox";
 
 export default function Header() {
   const [ navbarOpen, setNavbarOpen ] = useState(false);
@@ -65,28 +66,30 @@ export default function Header() {
           ) : (
             <>
               { isLargeScreen && (
-                <div className="hidden md:flex gap-8 justify-end">
+                <div className="hidden md:flex gap-8 justify-end items-center">
                   { user ? (
                     <>
                       <Link href="/suggestion/page" passHref>
-                        <Typography variant="body1" className="cursor-pointer text-white font-semibold">Suggestion</Typography>
+                        <Typography variant="body1" className="cursor-pointer font-semibold">Create Trip</Typography>
                       </Link>
-                      <Link href="/profile/page" passHref>
-                        <Typography variant="body1" className="cursor-pointer text-white font-semibold">Profile</Typography>
-                      </Link>
-                      <Link href="/profile/Home" passHref>
-                        <Typography variant="body1" className="cursor-pointer text-white font-semibold">Home</Typography>
-                      </Link>
-                      <Typography variant="body1" className="cursor-pointer text-white font-semibold" onClick={ handleSignOut }>Sign Out</Typography>
+
+                      {/* <Link href="/profile/Home" passHref>
+                        <Typography variant="body1" className="cursor-pointer font-semibold">My Trip</Typography>
+                      </Link> */}
+                      {/* <Typography variant="body1" className="cursor-pointer font-semibold" onClick={ handleSignOut }>Sign Out</Typography> */ }
+
+                      <header style={ { display: 'flex', justifyContent: 'flex-end', padding: '16px' } }>
+                        <ProfileBox />
+                      </header>
                     </>
                   ) : (
                     <>
-                      <Typography variant="body1" className="cursor-pointer text-white font-semibold" onClick={ handleSignInClick }>Sing In</Typography>
+                      <Typography variant="body1" className="cursor-pointer font-semibold" onClick={ handleSignInClick }>Sing In</Typography>
                       {/* <Link href="/login" passHref>
-                        <Typography variant="body1" className="cursor-pointer text-white font-semibold">Sing In</Typography>
+                        <Typography variant="body1" className="cursor-pointer font-semibold">Sing In</Typography>
                       </Link>            
                       <Link href="/signup" passHref>
-                        <Typography variant="body1" className="cursor-pointer text-white font-semibold">Sign Up</Typography>
+                        <Typography variant="body1" className="cursor-pointer font-semibold">Sign Up</Typography>
                       </Link> */}
                     </>
                   ) }
@@ -94,20 +97,37 @@ export default function Header() {
               ) }
             </>
           ) }
-          <Drawer anchor="right" open={ !isLargeScreen && navbarOpen } onClose={ () => setNavbarOpen(false) }>
+          <Drawer anchor="right" className="rounded-none" open={ !isLargeScreen && navbarOpen } onClose={ () => setNavbarOpen(false) }
+            sx={ {
+              '& .MuiPaper-root': {
+                backgroundColor: theme => theme.palette.background.paper,
+              },
+            } }>
             <List>
               { user ? (
                 <>
-                  <ListItem button onClick={ handleSignOut }>
-                    <ListItemIcon>
-                      <LogoutIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Sign Out" />
-                  </ListItem>
-                  <ListItem button>
+
+                  <ListItem>
                     <Link href="/suggestion/page" passHref>
-                      <ListItemText primary="Suggestion" />
+                      <Typography variant="body1" className="cursor-pointer font-semibold">Create Trip</Typography>
                     </Link>
+                  </ListItem>
+
+                  <ListItem>
+                    <Link href="/profile/Home" passHref>
+                      <Typography variant="body1" className="cursor-pointer font-semibold">My Trip</Typography>
+                    </Link>
+                  </ListItem>
+
+                  <ListItem>
+                    <Link href="/profile/page" passHref>
+                      <Typography variant="body1" className="cursor-pointer font-semibold">Profile</Typography>
+                    </Link>
+                  </ListItem>
+
+                  <ListItem button onClick={ handleSignOut } className="flex gap-2 font-semibold">
+                    <LogoutIcon />
+                    <ListItemText primary="Sign Out" />
                   </ListItem>
                 </>
               ) : (
@@ -123,16 +143,18 @@ export default function Header() {
                     </Link>
                   </ListItem> */}
 
-                    <ListItem button onClick={ handleSignInClick }>
-                        <ListItemText primary="Sing In" />
-                    </ListItem>
+                  <ListItem button onClick={ handleSignInClick }>
+                    <Typography>
+                      <ListItemText primary="Sing In" />
+                    </Typography>
+                  </ListItem>
                 </>
               ) }
-              <ListItem button>
+              {/* <ListItem button>
                 <Link href="/profile/page" passHref>
                   <ListItemText primary="Profile" />
                 </Link>
-              </ListItem>
+              </ListItem> */}
             </List>
           </Drawer>
           <Box className="flex gap-2 items-center">
@@ -149,7 +171,7 @@ export default function Header() {
       </Toolbar>
 
       <>
-     {  !user && <SingInModal open={ showSignInPopUp } onClose={ () => setShowSignInPopUp(false) } />}
+        { !user && <SingInModal open={ showSignInPopUp } onClose={ () => setShowSignInPopUp(false) } /> }
       </>
     </AppBar>
   );
