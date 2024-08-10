@@ -1,5 +1,4 @@
 const CardComponent = ({ place }) => {
-  debugger
   console.log(place);
   return (
     <MCard

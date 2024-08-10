@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../app/context/AuthContext";
 import {
@@ -17,6 +17,7 @@ const Page = ({ prompt, cb }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [loading, setLoading] = useState(true);
   const [apiResponse, setApiResponse] = useState("");
+  const [error, setError] = useState(""); 
   const router = useRouter();
 
   useEffect(() => {
@@ -55,39 +56,48 @@ const Page = ({ prompt, cb }) => {
       )
       .then((response) => {
         setApiResponse(response.data.content);
+        setError(""); 
         setIsTyping(false);
-        cb(true);
+        cb("recommendations");
       })
       .catch((error) => {
         setIsTyping(false);
-        cb(false);
-        console.error("Error:", error);
+        setError("Failed to fetch recommendations. Please try again."); 
+        cb("initial");
       });
   };
 
   const parseResponse = (response) => {
     const cardsData = [];
+    
     const sections = response.split("\n\n");
-
+  
     sections.forEach((section) => {
-      const lines = section.split("\n");
-      if (lines.length > 1) {
-        const titleLine = lines[0];
-        const contentLines = lines.slice(1);
-
-        if (titleLine.includes("**")) {
-          const title = titleLine.replace(/\*\*/g, "").trim();
-          const description = contentLines.join(" ").trim();
-          cardsData.push({ title, description });
+      const lines = section.split("\n").filter(line => line.trim() !== "");
+  
+      if (lines.length > 0) {
+        const titleLine = lines[0].replace(/^## \*\*|\*\*$/g, "").trim(); 
+        const descriptionLines = lines.slice(1).map(line => line.trim()).filter(line => line !== "").join(" ");
+        
+        if (titleLine) {
+          cardsData.push({ title: titleLine, description: descriptionLines });
         }
       }
     });
-
+  
     return cardsData;
   };
 
   const renderCards = () => {
     const cardsData = parseResponse(apiResponse);
+
+    if (error) {
+      return <RecommendationCard error={error} />;
+    }
+
+    if (cardsData.length === 0) {
+      return <div>No recommendations available at the moment.</div>;
+    }
 
     return cardsData.map((card, index) => (
       <RecommendationCard
@@ -129,7 +139,7 @@ const Page = ({ prompt, cb }) => {
                     <Typography>Wait for the adventure...</Typography>
                   </Box>
                 )}
-                <Box className="flex flex-wrap mt-4">{renderCards()}</Box>
+                {!isTyping && <Box className="flex flex-wrap mt-4">{renderCards()}</Box>}
               </Box>
             </Fragment>
           ) : (

@@ -66,19 +66,27 @@ function SwipeableEdgeDrawer(props) {
   };
 
   const handlePlaceSelected = (place) => {
-    console.log("Selected place:", place);
     setSelectedLocation(place);
   };
 
   const createPrompt = (payload) => {
-    const { location, numOfPeople, travelDistance } = payload;
+  const { location, numOfPeople, travelDistance } = payload;
 
-    return `Hey, I am planning a trip and would like recommendations for activities. Here are the details:
-      - Location: ${location}
-      - Number of people: ${numOfPeople}
-      - Travel distance: ${travelDistance}km
-      Can you suggest some options?`;
-  };
+  return `I am planning a trip and need recommendations for activities. Please provide suggestions in the following format:
+
+- **Activity Title 1**: A brief description of the activity.
+- **Activity Title 2**: A brief description of the activity.
+
+Make sure to separate each activity with a double newline.
+
+Details of the trip:
+- Location: ${location}
+- Number of people: ${numOfPeople}
+- Travel distance: ${travelDistance} km
+
+Please make sure the response is formatted with clear titles and descriptions.`;
+};
+
 
   const handleTripDetails = () => {
     const payload = {
@@ -86,7 +94,6 @@ function SwipeableEdgeDrawer(props) {
       numOfPeople: selectedOption,
       travelDistance: travelDistance || "any distance",
     };
-    console.log(payload, "final data");
     setFinalData(payload);
     const newPrompt = createPrompt(payload);
     setPrompt(newPrompt);
