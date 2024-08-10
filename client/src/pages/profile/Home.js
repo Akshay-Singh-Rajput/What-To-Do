@@ -12,8 +12,8 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import HistoryIcon from "@mui/icons-material/History";
-import Page from "../suggestion/page";
 import { ThemeContext } from "@emotion/react"; 
+import Page from "../suggestion/page";
 
 export default function Home() {
   const apiKey = "AIzaSyD55Jf-yj3s7jUla7VnaVSU6HyH2doHBWs"; 
