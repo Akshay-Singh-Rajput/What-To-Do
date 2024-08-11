@@ -18,7 +18,8 @@ const RecommendationCard = ({ places, error }) => {
     );
   }
 
-  const [latitude, longitude] = places?.geo_coordinates?.replace(/[^\d.,-]/g, '')?.split(',').map(coord => coord.trim()); 
+  const [latitude, longitude] = [0, 0]
+  // places?.geo_coordinates?.replace(/[^\d.,-]/g, '')?.split(',').map(coord => coord.trim()); 
   const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
 
   return (
