@@ -26,7 +26,7 @@ const TripOptions = ({activityForm, handleActivitryForm }) => {
           { budgetOptions.map((item, index) => (
             <div
               key={ index }
-              className={ ` shadow-md  rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer ${activityForm.budget === item.label
+              className={ ` shadow-md  rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer border ${activityForm.budget === item.label
                   ? "bg-blue-100 text-gray-500"
                   : ""
                 }` }
@@ -39,7 +39,7 @@ const TripOptions = ({activityForm, handleActivitryForm }) => {
           )) }
         </div>
 
-        <h2 className="text-lg leading-5  mt-8 mb-4">
+        {/* <h2 className="text-lg leading-5  mt-8 mb-4">
           Tell us your travel partner?
         </h2>
         <div className="flex flex-col px-4 py-4 mb-4 border-slate-600 border rounded-lg shadow-sm ">
@@ -56,7 +56,7 @@ const TripOptions = ({activityForm, handleActivitryForm }) => {
               </p>
             )) }
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
