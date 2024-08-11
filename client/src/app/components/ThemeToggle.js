@@ -6,6 +6,7 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 export default function ThemeToggle() {
     const { toggleTheme, themeMode } = useThemeContext();
 
+
     return (
         <>
             <IconButton onClick={ toggleTheme } color="inherit">
