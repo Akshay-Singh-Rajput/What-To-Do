@@ -41,7 +41,6 @@ export const AuthContextProvider = ({ children }) => {
             }
         }).then(response => {
             setUser(response.data);
-            router.push('/');
         }).catch(error => {
 
         });
