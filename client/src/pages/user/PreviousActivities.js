@@ -79,7 +79,7 @@ const AccordionComponent = ({ previousActivities }) => {
             expandIcon={ <ExpandMoreIcon /> }
             aria-controls={ `panel-${index}-content` }
             id={ `panel-${index}-header` }
-            className="bg-gray-800 dark:bg-gray-700"
+            className=""
             sx={ {
               '& .MuiTypography-root': {
                 color: theme => theme.palette.text.primary, // Use theme text color
@@ -90,7 +90,7 @@ const AccordionComponent = ({ previousActivities }) => {
               { data?.prompt }
             </Typography>
           </AccordionSummary>
-          <AccordionDetails className="bg-gray-900 dark:bg-gray-800">
+          <AccordionDetails className="">
             { data?.data.map((places, i) => (
               <RecommendationCard key={ i } places={ places || {} } />
             )) }

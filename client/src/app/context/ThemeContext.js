@@ -8,7 +8,7 @@ export const ThemeContextProvider = ({ children }) => {
     const [ themeMode, setThemeMode ] = useState('light');
 
     useEffect(() => {
-        const savedTheme = localStorage.getItem('theme') || 'light';
+        const savedTheme = localStorage.getItem('theme') || 'dark';
         setThemeMode(savedTheme);
     }, []);
 
