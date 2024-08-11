@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import RecommendationCard from "../suggestion/RecommendationCard";
 import { useGlobalContext } from "../../app/context/GlobalContext";
 import { CircularProgress, Box, Typography } from "@mui/material";
-
+import Loader from "../../app/components/Loader";
 function DemoCards() {
   const { currentActivities = [] } = useGlobalContext();
   const [loading, setLoading] = useState(true);
@@ -24,7 +24,7 @@ function DemoCards() {
           backgroundColor: "rgba(0, 0, 0, 0.1)",
         }}
       >
-        <CircularProgress />
+        <Loader />
       </Box>
     );
   }
