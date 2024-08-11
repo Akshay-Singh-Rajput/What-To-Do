@@ -1,4 +1,6 @@
 import { createContext, useContext, useState } from 'react';
+import { useAuth } from './AuthContext';
+import axios from 'axios';
 
 const GlobalContext = createContext();
 
@@ -97,12 +99,37 @@ let activities = [
 ];
 
 export const GlobalProvider = ({ children }) => {
+    const { user, setUser } = useAuth();
+    const [ isBottomSheetOpen, setIsBottomSheetOpen ] = useState(false);
     const [ currentActivities, setCurrentActivities ] = useState([]);
-
     const [ previousActivities, setPreviousActivities ] = useState([]);
 
+    const getUserProfile = () => {
+        axios.get('/user/profile',
+            {
+                headers: {
+                    accepts: "application/json",
+                    Authorization: `Bearer ${user?.token}`,
+                },
+            }
+        ).then(response => {
+            let data = response?.data || {};
+            setUser(data);
+            setPreviousActivities(data?.activities || []);
+        }).catch(error => {
+
+        });
+    };
+
+
     return (
-        <GlobalContext.Provider value={ { currentActivities, setCurrentActivities, previousActivities, setPreviousActivities } }>
+        <GlobalContext.Provider value={
+            {
+                getUserProfile,
+                currentActivities, setCurrentActivities,
+                previousActivities, setPreviousActivities,
+                isBottomSheetOpen, setIsBottomSheetOpen
+            } }>
             { children }
         </GlobalContext.Provider>
     );

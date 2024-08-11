@@ -1,0 +1,102 @@
+import React, { useEffect } from 'react';
+import { useGlobalContext } from '../../app/context/GlobalContext';
+import RecommendationCard from '../suggestion/RecommendationCard';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useAuth } from '../../app/context/AuthContext';
+
+function PreviousActivities() {
+  const { previousActivities = [], getUserProfile, setIsBottomSheetOpen } = useGlobalContext();
+
+  useEffect(() => {
+    getUserProfile();
+  }, []);
+
+  console.log({ previousActivities });
+  return (
+    <div>
+      {
+        previousActivities.length === 0 ? <>
+          <div className="text-center">
+            <Typography variant="h6" gutterBottom className="mb-4">
+              No activities have been created yet.
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={ setIsBottomSheetOpen }
+              className="w-full max-w-xs"
+            >
+              Create First Activity
+            </Button>
+          </div>
+        </>
+          : <>
+
+            <AccordionComponent previousActivities={ previousActivities }  />
+            {/* { previousActivities.map(data => (
+              <>
+                <div className='p-4'>
+                  <Typography variant="h6" gutterBottom className="mb-4">
+                    { data?.prompt }
+                  </Typography>
+                </div>
+                {
+                  data?.data.map((places) => (
+                    <RecommendationCard places={ places || {} } />
+                  ))
+                }
+              </>
+            )) } */}
+          </>
+      }
+
+    </div>
+  );
+}
+
+export default PreviousActivities;
+
+
+
+const AccordionComponent = ({ previousActivities }) => {
+  return (
+    <div className="p-4">
+      { previousActivities.map((data, index) => (
+        <Accordion
+          key={ index }
+          className="mb-4 shadow-lg rounded-md"
+          sx={ {
+            '& .MuiAccordionSummary-content': {
+              fontSize: '0.875rem',
+            },
+            '& .MuiAccordionSummary-expandIcon': {
+              fontSize: '1rem'
+            },
+          } }
+        >
+          <AccordionSummary
+            expandIcon={ <ExpandMoreIcon /> }
+            aria-controls={ `panel-${index}-content` }
+            id={ `panel-${index}-header` }
+            className="bg-gray-800 dark:bg-gray-700"
+            sx={ {
+              '& .MuiTypography-root': {
+                color: theme => theme.palette.text.primary, // Use theme text color
+              },
+            } }
+          >
+            <Typography variant="p" className="font-semibold text-gray-100 dark:text-gray-300">
+              { data?.prompt }
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className="bg-gray-900 dark:bg-gray-800">
+            { data?.data.map((places, i) => (
+              <RecommendationCard key={ i } places={ places || {} } />
+            )) }
+          </AccordionDetails>
+        </Accordion>
+      )) }
+    </div>
+  );
+};

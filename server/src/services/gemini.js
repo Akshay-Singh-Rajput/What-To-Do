@@ -21,13 +21,6 @@ const model = genAI.getGenerativeModel({
     }
 });
 
-let generationConfig = {
-    "temperature": 1,
-    "topP": 0.95,
-    "topK": 64,
-    "maxOutputTokens": 8192,
-    "responseMimeType": "application/json"
-};
 const chatInstances = {};
 
 const createChatInstance = (email) => {
@@ -46,7 +39,7 @@ async function generateAiContent(email, prompt) {
         const chat = chatInstances[ email ];
 
         // Adding the system instruction to the prompt
-        const systemPrompt = `You are a model that strictly outputs a list of 10 object. Each object must contain the following key names and values: "activity_name", "activity_image", "activity_description", "pricing", "geo_coordinates", "place_address", and "location". The "activity_image" must be a valid image URL sourced from a Google Images search. Do not include any additional text or keys. The output should only be the list of objects in the specified format.`;
+        const systemPrompt = `You are a model that strictly outputs a list of 10 object. Each object must contain the following key names and values: "activity_name", "activity_image", "activity_description", "pricing", "geo_coordinates", "place_address", and "location". The "activity_image" must be a valid image URL. Do not include any additional text or keys. The output should only be the list of objects in the specified format.`;
 
         const combinedPrompt = `${systemPrompt}\n\n${prompt}`;
 
@@ -54,6 +47,7 @@ async function generateAiContent(email, prompt) {
         const history = chat._history;
         const response = await result.response;
         const text = await response.text();
+        console.log({text})
         let parsedText = JSON.parse(text)
         return { jsonData: parsedText, history, response };
     } catch (error) {
