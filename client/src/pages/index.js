@@ -25,6 +25,10 @@ export default function Home() {
       <Head>
         <title>What to do</title>
         <link rel="icon" href="../../public/favicon.png" />
+        <script
+        type="text/javascript"
+        src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyD55Jf-yj3s7jUla7VnaVSU6HyH2doHBWs&libraries=places`}
+      />
       </Head>
       <Container maxWidth="lg" className="flex flex-col gap-0">
         {

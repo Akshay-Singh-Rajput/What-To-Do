@@ -19,7 +19,6 @@ import Close from "@mui/icons-material/Close";
 import Loader from "./Loader";
 const drawerHeight = "90vh";
 const drawerBleeding = "0";
-
 const Root = styled("div")(({ theme }) => ({
   height: "100%",
   backgroundColor:
