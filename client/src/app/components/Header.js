@@ -77,7 +77,7 @@ export default function Header() {
                   { user ? (
                     <>
                       <Link href="/suggestion/page" passHref>
-                        <Typography variant="body1" className="cursor-pointer font-semibold">Create Trip</Typography>
+                          <Typography variant="body1" className="cursor-pointer font-semibold">Plan Activity</Typography>
                       </Link>
                       <header style={ { display: 'flex', justifyContent: 'flex-end', padding: '16px' } }>
                         <ProfileBox />
@@ -142,7 +142,7 @@ export default function Header() {
 
                   <ListItem button onClick={ handleSignInClick }>
                     <Typography>
-                      <ListItemText primary="Sing In" />
+                      <ListItemText primary="Sign In" />
                     </Typography>
                   </ListItem>
                 </>

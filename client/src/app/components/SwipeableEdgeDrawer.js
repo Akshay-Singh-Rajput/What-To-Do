@@ -8,13 +8,12 @@ import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import LocationSearchBar from "./LocationSearchBar";
 import { Typography } from "@mui/material";
-import Home from "../../pages/profile/Home";
 import Page from "../../pages/suggestion/page";
 import { useImmer } from "use-immer";
 import AdvanceActivityForm from "./AdvanceActivityForm";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
-import { useActivites } from "../context/ActivitiesContext";
+import { useGlobalContext } from "../context/GlobalContext";
 import { useRouter } from "next/router";
 
 const drawerHeight = "90vh";
@@ -35,8 +34,8 @@ const StyledBox = styled("div")(({ theme }) => ({
 function SwipeableEdgeDrawer(props) {
   const { window, isOpen, open, setOpen } = props;
   const { user } = useAuth();
-  const { activities, setActivities } = useActivites();
-  console.log({ activities });
+  const { currentActivities, setCurrentActivities } = useGlobalContext();
+  console.log({ currentActivities });
   const [ prompt, setPrompt ] = useState("");
   const [ currentPage, setCurrentPage ] = useState("initial");
   const [ personalizationOptions, setPersonalizationOptions ] = useState([
@@ -91,6 +90,8 @@ function SwipeableEdgeDrawer(props) {
 
 
   const handleGenerateActivity = () => {
+    router.push('/profile/Home');
+    return;
     axios.post(
       "/ai/suggestions",
       { payload: activityForm },
@@ -102,9 +103,9 @@ function SwipeableEdgeDrawer(props) {
       }
     )
       .then((response) => {
-        setActivities(response.data.content);
+        setCurrentActivities(response.data.content);
         setApiResponse(response.data.content);
-        router.push('/profile/home');
+        router.push('/profile/Home');
       })
       .catch((error) => {
         console.error({ error });

@@ -1,12 +1,15 @@
 import Head from "next/head";
 import Header from "../app/components/Header";
-import Main from "../app/components/Main";
 import Footer from "../app/components/Footer";
 import { NextSeo } from "next-seo";
 import LandingPage from "../app/components/LandingPage";
 import { Box, Container } from "@mui/material";
+import { useAuth } from "../app/context/AuthContext";
+import PreviousActivities from "../app/components/previousActivities";
 
 export default function Home() {
+  const { user } = useAuth();
+
   let themeClass = 'dark:bg-gray-900 bg-gray-100 dark:text-white text-gray-800';
   return (
     <Box className="">
@@ -22,9 +25,13 @@ export default function Home() {
         <title>What to do</title>
         <link rel="icon" href="../../public/favicon.png" />
       </Head>
-      {/* <Main /> */ }
       <Container maxWidth="lg" className="flex flex-col gap-0">
-        <LandingPage />
+        {
+          user ?
+            <PreviousActivities />
+            :
+            <LandingPage />
+        }
         <Footer />
       </Container>
     </Box>
