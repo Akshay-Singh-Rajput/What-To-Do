@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import RecommendationCard from "./RecommendationCard";
-
+import Loader from "../../app/components/Loader";
 const Page = ({ prompt, cb }) => {
   const { user } = useAuth();
   const [isTyping, setIsTyping] = useState(false);
@@ -129,7 +129,7 @@ const Page = ({ prompt, cb }) => {
               alignItems="center"
               height="100%"
             >
-              <CircularProgress />
+              <Loader />
             </Box>
           ) : user ? (
             <Fragment>
