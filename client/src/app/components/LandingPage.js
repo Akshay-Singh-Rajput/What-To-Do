@@ -4,12 +4,14 @@ import { useThemeContext } from '../context/ThemeContext';
 import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
 import SwipeableEdgeDrawer from './SwipeableEdgeDrawer';
+import SignInModal from './SignInModal';
 
 const LandingPage = () => {
     const { user } = useAuth();
     const theme = useTheme();
     const { themeMode } = useThemeContext();
     const [ isOpenModal, setIsOpenModal ] = useState(false);
+    const [ showSignInPopUp, setShowSignInPopUp ] = useState(false);
 
     const textColor = theme.palette.text.primary;
     const isDarkMode = themeMode === 'dark';
@@ -17,27 +19,26 @@ const LandingPage = () => {
     const introTextColor = isDarkMode ? 'text-white' : 'text-black';
     const introBackgroundColor = isDarkMode ? 'bg-gray-900' : 'bg-gray-100';
 
-    //     useMemo(()=>{
-    //    setIsOpenModal(true)
-    //     },[isOpenModal])
-
-
 
     return (
-        <Container maxWidth="lg" className={ `${introBackgroundColor}` }>
-            <SwipeableEdgeDrawer open={ isOpenModal } setOpen={ setIsOpenModal } />
-            <div className={ `min-h-screen flex flex-col items-center justify-center ${introBackgroundColor}` }>
-                <Typography variant="h2" component="h1" gutterBottom className={ introTextColor }>
-                    Welcome { user?.displayName } to WhatToDo!
-                </Typography>
-                <Typography variant="h5" gutterBottom sx={ { color: textColor } } className='text-center'>
-                    Discover your perfect plan with WhatToDo! Personalized activities tailored to your mood, budget, location, group, age, and more. Start exploring now!
-                </Typography>
-                <Button variant="contained" color="primary" className='mt-2' onClick={ () => setIsOpenModal(true) }>
-                    get started
-                </Button>
-            </div>
-            <Box my={ 6 } className={ introTextColor }>
+        <>
+            <Container maxWidth="lg" className={ `${introBackgroundColor}` }>
+                <SwipeableEdgeDrawer open={ isOpenModal } setOpen={ setIsOpenModal } />
+                <div className={ `min-h-screen flex flex-col items-center justify-center ${introBackgroundColor}` }>
+                    <Typography variant="h2" component="h1" gutterBottom className={ introTextColor }>
+                        Welcome { user?.displayName } to WhatToDo!
+                    </Typography>
+                    <Typography variant="h5" gutterBottom sx={ { color: textColor } } className='text-center'>
+                        Discover your perfect plan with WhatToDo! Personalized activities tailored to your mood, budget, location, group, age, and more. Start exploring now!
+                    </Typography>
+                    { !user &&
+                        <Button variant="contained" color="primary" className='mt-2' onClick={ () => setShowSignInPopUp(true) }>
+                            get started
+                        </Button>
+                    }
+                </div>
+
+                {/* <Box my={ 6 } className={ introTextColor }>
                 <Typography variant="h4" component="h2" align="center" gutterBottom>
                     Key Features
                 </Typography>
@@ -85,8 +86,11 @@ const LandingPage = () => {
                     <FeatureCard title="Previous Activities" description="View your past activities, including liked, disliked, and wish-listed activities." icon="📚" />
                     <FeatureCard title="Post-Activity Feedback" description="Rate your experiences and provide detailed reviews to improve future recommendations." icon="🌟" />
                 </div>
-            </Box>
-        </Container>
+            </Box> */}
+            </Container>
+
+            { !user && <SignInModal open={ showSignInPopUp } onClose={ () => setShowSignInPopUp(false) } /> }
+        </>
     );
 };
 

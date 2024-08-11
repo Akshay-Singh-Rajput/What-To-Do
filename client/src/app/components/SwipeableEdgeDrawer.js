@@ -10,6 +10,10 @@ import LocationSearchBar from "./LocationSearchBar";
 import { Typography } from "@mui/material";
 import Home from "../../pages/profile/Home";
 import Page from "../../pages/suggestion/page";
+import { useImmer } from "use-immer";
+import AdvanceActivityForm from "./AdvanceActivityForm";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const drawerHeight = "90vh";
 const drawerBleeding = "0";
@@ -28,11 +32,8 @@ const StyledBox = styled("div")(({ theme }) => ({
 
 function SwipeableEdgeDrawer(props) {
   const { window, isOpen, open, setOpen } = props;
-  // const [open, setOpen] = useState(isOpen);
-  const [ selectedOption, setSelectedOption ] = useState("A couple");
-  const [ travelDistance, setTravelDistance ] = useState("");
-  const [ finalData, setFinalData ] = useState("");
-  const [ selectedLocation, setSelectedLocation ] = useState("");
+  const { user } = useAuth();
+
   const [ prompt, setPrompt ] = useState("");
   const [ currentPage, setCurrentPage ] = useState("initial");
   const [ personalizationOptions, setPersonalizationOptions ] = useState([
@@ -41,6 +42,23 @@ function SwipeableEdgeDrawer(props) {
   const [ selectedPersonalization, setSelectedPersonalization ] = useState(
     personalizationOptions
   );
+
+  const [ activityForm, setActivityForm ] = useImmer({
+    location: "",
+    nDays: 1,
+    nHrs: 1,
+    nPeople: "",
+    budget: "",
+    radius: "",
+    activities: [],
+    feelings: [],
+    gender: "All",
+    ageRange: "",
+    interests: ""
+  });
+  const [ apiResponse, setApiResponse ] = useState(null);
+
+  console.log({ activityForm });
 
   const apiKey = "AIzaSyD55Jf-yj3s7jUla7VnaVSU6HyH2doHBWs";
 
@@ -57,47 +75,32 @@ function SwipeableEdgeDrawer(props) {
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
-  const handleOptionClick = (option) => {
-    setSelectedOption(option);
+
+  const handleActivitryForm = ({ key, value }) => {
+    console.log({ key, value });
+    setActivityForm(state => {
+      state[ key ] = value;
+    });
   };
 
-  const handleInputChange = (event) => {
-    setTravelDistance(event.target.value);
-  };
 
-  const handlePlaceSelected = (place) => {
-    setSelectedLocation(place);
-  };
-
-  const createPrompt = (payload) => {
-  const { location, numOfPeople, travelDistance } = payload;
-
-  return `I am planning a trip and need recommendations for activities. Please provide suggestions in the following format:
-
-- **Activity Title 1**: A brief description of the activity.
-- **Activity Title 2**: A brief description of the activity.
-
-Make sure to separate each activity with a double newline.
-
-Details of the trip:
-- Location: ${location}
-- Number of people: ${numOfPeople}
-- Travel distance: ${travelDistance} km
-
-Please make sure the response is formatted with clear titles and descriptions.`;
-};
-
-
-  const handleTripDetails = () => {
-    const payload = {
-      location: selectedLocation?.formatted_address || "India",
-      numOfPeople: selectedOption,
-      travelDistance: travelDistance || "any distance",
-    };
-    setFinalData(payload);
-    const newPrompt = createPrompt(payload);
-    setPrompt(newPrompt);
-    console.log(newPrompt);
+  const handleGenerateActivity = () => {
+    axios.post(
+      "/ai/suggestions",
+      { payload: activityForm },
+      {
+        headers: {
+          accepts: "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+    )
+      .then((response) => {
+        setApiResponse(response.data.content);
+      })
+      .catch((error) => {
+        console.error({ error });
+      });
   };
 
   const handleSelectPersonalization = (option) => {
@@ -176,20 +179,21 @@ Please make sure the response is formatted with clear titles and descriptions.`;
             <Button onClick={ handleBack }>Back</Button>
           ) }
           { currentPage === "recommendations" ? (
-            <Page prompt={ prompt } cb={ setCurrentPage } />
+            <Page activityForm={ activityForm } cb={ setCurrentPage } />
           ) : currentPage === "personalization" ? (
             <div>
-              <Home />
+                <AdvanceActivityForm activityForm={ activityForm } handleActivitryForm={ handleActivitryForm } handleGenerateActivity={ handleGenerateActivity }/>
             </div>
           ) : (
             <div className="relative flex size-full flex-col justify-between group/design-root overflow-x-hidden">
-              <div className="flex justify-center text-2xl font-semibold  mb-20">
-                Plan your trip 
+              <div className="flex justify-center text-2xl font-semibold  mb-10">
+                Find your best activities
               </div>
               <div className="px-4 py-3 mb-10">
                 <LocationSearchBar
                   apiKey={ apiKey }
-                  onPlaceSelected={ handlePlaceSelected }
+                  searchField={ activityForm.location }
+                  onPlaceSelected={ (place) => handleActivitryForm({ key: 'location', value: place.formatted_address }) }
                 />
               </div>
               <div className="text-base font-medium  mb-2">Travel Partner</div>
@@ -199,11 +203,11 @@ Please make sure the response is formatted with clear titles and descriptions.`;
                     (option) => (
                       <p
                         key={ option }
-                        className={ `text-sm w-full font-bold leading-normal tracking-[0.015em] flex h-11 items-center justify-center truncate px-4 text-center group-[:first-child]:rounded-l-full group-[:last-child]:rounded-r-full ${selectedOption === option
-                            ? "text-white bg-slate-400"
-                            : ""
+                        className={ `text-sm w-full font-bold leading-normal tracking-[0.015em] flex h-11 items-center justify-center truncate px-4 text-center group-[:first-child]:rounded-l-full group-[:last-child]:rounded-r-full ${activityForm.nPeople === option
+                          ? "text-white bg-slate-400"
+                          : ""
                           }` }
-                        onClick={ () => handleOptionClick(option) }
+                        onClick={ () => handleActivitryForm({ key: 'nPeople', value: option }) }
                       >
                         { option }
                       </p>
@@ -214,14 +218,14 @@ Please make sure the response is formatted with clear titles and descriptions.`;
               <div className="flex flex-wrap items-end gap-4 px-4 py-3">
                 <label className="flex flex-col min-w-40 flex-1">
                   <p className="text-base font-medium leading-normal pb-2 ">
-                    Travel distance(kms)
+                    Radius(kms)
                   </p>
                   <div className="flex w-full flex-1 items-stretch rounded-xl ">
                     <input
                       placeholder="50 kms"
                       className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl focus:outline-0 focus:ring-0 border-none bg-gray-100 focus:border-none h-14 placeholder:text-gray-500 p-4 rounded-r-none border-r-0 pr-2 text-black font-normal leading-normal"
-                      value={ travelDistance }
-                      onChange={ handleInputChange }
+                      value={ activityForm.radius }
+                      onChange={ ({ value }) => handleActivitryForm({ key: 'radius', value }) }
                     />
                     <div
                       className="text-gray-500 flex border-none bg-gray-100 items-center justify-center pr-4 rounded-r-xl border-l-0"
@@ -241,25 +245,26 @@ Please make sure the response is formatted with clear titles and descriptions.`;
                     </div>
                   </div>
                 </label>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className="bg-blue-800 text-white h-14 w-14 p-0 flex items-center justify-center rounded-lg hover:bg-black text-sm"
-                  onClick={ handleTripDetails }
-                >
-                  Next
-                </Button>
               </div>
-              <div className="mt-5">
-                <Typography>Advance Personalization</Typography>
+              <div className="mt-5 flex justify-center">
+                {/* <Typography>Advance Personalization</Typography> */ }
                 <Button
                   onClick={ handleShowAdvancePreferences }
-                  variant="contained"
+                  variant="outlined"
                   color="primary"
                 >
-                  Personalize
+                  Go Advance Personalization
                 </Button>
               </div>
+              <Typography className="my-4 text-center">OR</Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                className="px-4 py-2 flex items-center justify-center rounded-lg hover:bg-black text-sm"
+                onClick={ handleGenerateActivity }
+              >
+                Find Your Ideal Activities
+              </Button>
             </div>
           ) }
         </StyledBox>
