@@ -115,7 +115,7 @@ export const GlobalProvider = ({ children }) => {
         ).then(response => {
             let data = response?.data || {};
             setUser(data);
-            setPreviousActivities(data?.activities || []);
+            setPreviousActivities(data?.user?.activities || []);
         }).catch(error => {
 
         });

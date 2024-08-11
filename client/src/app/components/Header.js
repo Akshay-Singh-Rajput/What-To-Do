@@ -163,13 +163,14 @@ export default function Header() {
                 borderRadius: "0",
                 width: "70%",
                 height: "100dvh",
+                padding:"12px"
               },
             } }
           >
             <List>
               { user ? (
                 <>
-                  <ListItem onClick={ handleBottomSheetToggle }>
+                <ListItem onClick={ handleBottomSheetToggle }>
                     <Typography
                       variant="body1"
                       className="cursor-pointer font-semibold"
@@ -177,6 +178,7 @@ export default function Header() {
                       Plan Activity
                     </Typography>
                   </ListItem>
+                  
 
                   <ListItem>
                     <Link href="/user/PreviousActivities" passHref>
@@ -199,16 +201,7 @@ export default function Header() {
                       </Typography>
                     </Link>
                   </ListItem> */}
-                  <ListItem>
-                    <Link href="/demoCards/DemoCards" passHref>
-                      <Typography
-                        variant="body1"
-                        className="cursor-pointer font-semibold"
-                      >
-                        DemoCards
-                      </Typography>
-                    </Link>
-                  </ListItem>
+                  
 
                   <ListItem
                     button
