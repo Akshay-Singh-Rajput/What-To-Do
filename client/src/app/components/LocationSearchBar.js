@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import { InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -8,6 +8,7 @@ const libraries = [ "places" ];
 
 const LocationSearchBar = ({ apiKey, onPlaceSelected }) => {
   const [ autocomplete, setAutocomplete ] = useState(null);
+  const [ mapLoaded, setMapLoaded ] = useState(false);
 
   const onLoad = (auto) => {
     setAutocomplete(auto);
@@ -26,15 +27,25 @@ const LocationSearchBar = ({ apiKey, onPlaceSelected }) => {
     }
   };
 
+  useEffect(() => {
+    // This code will execute after the Google Maps script has loaded
+    if (window.google) {
+      setMapLoaded(true);
+    }
+  }, []);
   return (
     <div
       className="w-full text-center relative mb-5"
     >
-      <LoadScript googleMapsApiKey={ apiKey } libraries={ libraries }>
-        <div className="absolute w-full">
+      <LoadScript
+        googleMapsApiKey={ apiKey }
+        libraries={ libraries }
+        onLoad={ () => setMapLoaded(true) }
+      >
+        { mapLoaded && (<div className="absolute w-full">
           <Autocomplete
             onLoad={ onLoad }
-            onPlaceChanged={ onPlaceChanged } 
+            onPlaceChanged={ onPlaceChanged }
           >
             <TextField
               type="text"
@@ -54,7 +65,7 @@ const LocationSearchBar = ({ apiKey, onPlaceSelected }) => {
               } }
             />
           </Autocomplete>
-        </div>
+        </div>) }
       </LoadScript>
     </div>
   );
