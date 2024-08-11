@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LoadScript, Autocomplete } from "@react-google-maps/api";
+import {Autocomplete } from "@react-google-maps/api";
 import { InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -30,7 +30,7 @@ const LocationSearchBar = ({ apiKey, onPlaceSelected }) => {
     <div
       className="w-full text-center relative mb-5"
     >
-      <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
+     
         <div className="absolute w-full">
           <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
             <TextField
@@ -51,7 +51,6 @@ const LocationSearchBar = ({ apiKey, onPlaceSelected }) => {
             />
           </Autocomplete>
         </div>
-      </LoadScript>
     </div>
   );
 };
