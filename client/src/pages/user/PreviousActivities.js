@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useGlobalContext } from '../../app/context/GlobalContext';
-import RecommendationCard from '../suggestion/RecommendationCard';
+import RecommendationCard from '../../app/components/RecommendationCard';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAuth } from '../../app/context/AuthContext';
@@ -33,7 +33,7 @@ function PreviousActivities() {
         </>
           : <>
 
-            <AccordionComponent previousActivities={ previousActivities }  />
+            <AccordionComponent previousActivities={ previousActivities } />
             {/* { previousActivities.map(data => (
               <>
                 <div className='p-4'>
