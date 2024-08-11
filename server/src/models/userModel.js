@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     uid: { type: String, default: "" },
     name: { type: String, default: "" },
     picture: { type: String, default: "" },
+    activities: [],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });

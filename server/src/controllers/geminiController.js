@@ -1,60 +1,26 @@
 const express = require('express');
 const { generateAiContent } = require('../services/gemini');
-const { createPrompt, promptGenerator } = require('../helper/travelPromptGenerator');
+const { promptGenerator } = require('../helper/travelPromptGenerator');
+const User = require('../models/userModel');
 
-// const createPrompt = (payload) => {
-//     const { location, nDays, nPeople, budget, radius, } = payload;
-//     let budgetEnum = [ 'Cheap', "Moderate", "Luxury" ];
-//     let interestedIn = [ 'Both', 'outdoor', 'indoor' ];
-//     let nPeopleEnum = [ "Just me", "A couple", "Family", "Friends" ];
-//     const activityType = [
-//         { activity_type: "Both" },
-//         { activity_type: "Outdoor" },
-//         { activity_type: "Indoor" },
-//     ];
+async function addActivitiesByEmail(email, newActivities) {
+    try {
+        const user = await User.findOne({ email });
 
-//     const outdoorActivities = [
-//         "Hiking",
-//         "Picnicking",
-//         "Biking",
-//         "Camping",
-//         "Beach Day",
-//         "Sports",
-//         "Running/Jogging",
-//         "Fishing",
-//         "Kayaking/Canoeing",
-//         "Gardening",
-//     ];
-//     const indoorActivities = [
-//         "Board Games",
-//         "Cooking/Baking",
-//         "Movie Marathon",
-//         "Video Games",
-//         "Puzzle Solving",
-//         "DIY Crafts",
-//         "Book Club",
-//         "Karaoke",
-//         "Escape Room",
-//         "Trivia Night",
-//     ];
-//     const bothActivities = [
-//         ...indoorActivities,
-//         ...outdoorActivities
-//     ];
+        if (!user) {
+            throw new Error('User not found');
+        }
 
-//     const initialFeelingOptions = [ "Happy", "Relax", "Inspired", "Stressed" ];
+        user.activities.push(...newActivities);
 
+        const updatedUser = await user.save();
 
-//     const initialPersonalizationOptions = [
-//         { label: "Distance", value: "5" },
-//         { label: "Gender", value: "All" },
-//         { label: "Age", value: "18-45" },
-//     ];
-
-
-//     let prompt = `"Generate Travel Plan for Location : ${location} with radius of ${radius} kms, for ${nDays} Days for ${nPeople} with a ${budget} budget, give me Hotels options list with HotelName, Hotel address, Price, hotel image url, geo coordinates, rating, descriptions and  suggest itinerary with placeName, Place Details, Place Image Url, Geo Coordinates,Place address, ticket Pricing as per location currency, Time travel each of the location for 1 days with each day plan with best time to visit in JSON format."`;
-// };
-
+        return updatedUser;
+    } catch (error) {
+        console.error('Error adding activities:', error);
+        throw error;
+    }
+}
 const getSuggestions = async (req, res) => {
     let { payload } = req.body;
 
@@ -74,14 +40,20 @@ const getSuggestions = async (req, res) => {
         feelings: [ "Happy", "Inspired" ],
         gender: "All",
         ageRange: "18-30",
-        interests: [ "Outdoor", "Indoor" ]
+        interests: "Outdoor"
     };
 
     let prompt = promptGenerator(payload);
 
     try {
-        const { text, history, response } = await generateAiContent(req.user.email, prompt);
-        res.status(200).json({ content: text });
+        const { jsonData, history, response } = await generateAiContent(req.user.email, prompt);
+        const activities = {
+            prompt: prompt,
+            payload: payload,
+            data: jsonData
+        };
+        const user = await addActivitiesByEmail(email, activities);
+        res.status(200).json({ content: jsonData });
     } catch (error) {
         res.status(500).json({ error: 'Failed to generate AI content' });
     }

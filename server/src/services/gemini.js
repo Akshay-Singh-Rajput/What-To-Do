@@ -55,7 +55,7 @@ async function generateAiContent(email, prompt) {
         const response = await result.response;
         const text = await response.text();
         let parsedText = JSON.parse(text)
-        return { text: parsedText, history, response };
+        return { jsonData: parsedText, history, response };
     } catch (error) {
         console.error("Error generating AI content:", error);
         throw error;
