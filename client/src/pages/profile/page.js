@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../app/context/AuthContext";
 import { Box, CircularProgress, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { useRouter } from "next/router";
+import Loader from "../../app/components/Loader";
 
 const Page = () => {
     const { user } = useAuth();
@@ -38,7 +39,7 @@ const Page = () => {
         <div className="h-full flex flex-col justify-center items-center dark:bg-gray-900 bg-gray-100 dark:text-white text-gray-800">
             { loading ? (
                 <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-                    <CircularProgress />
+                    <Loader />
                 </Box>
             ) : user ? (
                 <Typography variant="body1">
