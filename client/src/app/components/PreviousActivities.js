@@ -1,13 +1,14 @@
 import React from 'react';
 import { useGlobalContext } from '../context/GlobalContext';
 import RecommendationCard from '../../pages/suggestion/RecommendationCard';
+import { Button, Typography } from '@mui/material';
 
 function PreviousActivities() {
   const { currentActivities = [] } = useGlobalContext();
   return (
     <div>
       {
-        currentActivities.lenght === 0 ? <>
+        currentActivities.length === 0 ? <>
           <div className="text-center">
             <Typography variant="h6" gutterBottom className="mb-4">
               No activities have been created yet.
@@ -15,7 +16,7 @@ function PreviousActivities() {
             <Button
               variant="contained"
               color="primary"
-              onClick={ handleCreateActivities }
+              onClick={ "handleCreateActivities" }
               className="w-full max-w-xs"
             >
               Create First Activity
