@@ -1,9 +1,18 @@
-import React from 'react'
+import React from 'react';
+import { useActivites } from '../../app/context/ActivitiesContext';
+import RecommendationCard from '../suggestion/RecommendationCard';
 
 function Home() {
+  const { activities } = useActivites();
   return (
-    <div>Home</div>
-  )
+    <div>
+      { activities.map(place => (
+        <>
+          <RecommendationCard places={ place } />
+        </>
+      )) }
+    </div>
+  );
 }
 
-export default Home
+export default Home;

@@ -12,15 +12,15 @@ function MyApp({ Component, pageProps }) {
   axios.defaults.baseURL = isProduction ? apiUrl : localUrl;
 
   useEffect(() => {
-    checkBackendHealth()
-  },[])
+    checkBackendHealth();
+  }, []);
 
   return (
-      <ThemeContextProvider>
-        <RootLayout >
-          <Component { ...pageProps } />
-        </RootLayout>
-      </ThemeContextProvider>
+    <ThemeContextProvider>
+      <RootLayout >
+        <Component { ...pageProps } />
+      </RootLayout>
+    </ThemeContextProvider>
   );
 
 }

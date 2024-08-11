@@ -1,44 +1,121 @@
-import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
+// import React from 'react';
+// import { Card, CardContent, Typography } from '@mui/material';
+// import { Image } from '@mui/icons-material';
 
-const RecommendationCard = ({ title, description, error }) => {
+// const RecommendationCard = ({ title, description, error }) => {
+//   if (error) {
+//     return <div>{ error }</div>;
+//   }
+
+//   // if (!title && !description) {
+//   //   return <div>Please try again</div>;
+//   // }
+
+
+//   let places =
+//   {
+//     "activity_name": "Visit the Kingdom of Dreams",
+//     "activity_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4_d31_15W7jK_H11Q3M9J4V5-u96nX80J_Q&usqp=CAU",
+//     "activity_description": "Experience a vibrant cultural extravaganza at the Kingdom of Dreams, featuring live performances, musicals, and a taste of Indian heritage.",
+//     "pricing": "₹500 - ₹1,500 per person",
+//     "geo_coordinates": "28.4595° N, 77.0266° E",
+//     "place_address": "Sector 29, Gurugram, Haryana 122001",
+//     "location": "Gurugram, Haryana, India"
+//   };
+
+
+//   return (
+//     <>
+//       <Card sx={ { maxWidth: 345, margin: 1 } }>
+//         <Image values={ places.activity_image } />
+//         <CardContent>
+//           { title && (
+//             <Typography variant="h5" component="div">
+//               { title }
+//             </Typography>
+//           ) }
+//           { description && (
+//             <Typography variant="body2" color="text.secondary">
+//               { description }
+//             </Typography>
+//           ) }
+//         </CardContent>
+//       </Card>
+//     </>
+//   );
+// };
+
+// export default RecommendationCard;
+
+
+
+
+import React, { useState } from 'react';
+import { Card, CardContent, CardMedia, Typography } from '@mui/material';
+
+const RecommendationCard = ({ places, error }) => {
+  const [ imageSrc, setImageSrc ] = useState(
+    places?.activity_image || ''
+  );
+
+  const fallbackImage = "https://demofree.sirv.com/products/123456/123456.jpg?profile=error-example";
+
+  const handleImageError = () => {
+    setImageSrc(fallbackImage);
+  };
+
+
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="p-4 bg-red-100 text-red-800 border border-red-300 rounded">
+        { error }
+      </div>
+    );
   }
 
-  if (!title && !description) {
-    return <div>Please try again</div>;
-  }
-
-
-  let x = [
-    {
-      "activity_name": "Hiking in the Aravalli Hills",
-      "activity_image": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.thrillophilia.com%2Fblog%2Ftrekking-near-delhi%2F&psig=AOvVaw3Fz7Y68p78eC0C_wY3L_6F&ust=1701441346020000&source=images&cd=vfe&ved=0CA8QjRxqFwoTCJCs08D5gv4CFQAAAAAdAAAAABAJ",
-      "activity_description": "Embark on a scenic hike through the Aravalli Hills, just outside Delhi. Explore the rocky terrain, enjoy breathtaking views, and breathe in the fresh air. This is a great way to get some exercise, connect with nature, and feel inspired.",
-      "pricing": "₹500-₹1000 per person",
-      "geo_coordinates": "28.6139° N, 77.2090° E",
-      "place_address": "Aravalli Hills, Delhi",
-      "location": "Delhi"
-    }
-  ]
+  // const places = {
+  //   activity_name: "Visit the Kingdom of Dreams",
+  //   activity_image: "https://cdn.dribbble.com/userupload/4391227/file/original-3bd9433655e67aabe8fd2c65821250b5.png?resize=400x0",
+  //   activity_description: "Experience a vibrant cultural extravaganza at the Kingdom of Dreams, featuring live performances, musicals, and a taste of Indian heritage.",
+  //   pricing: "₹500 - ₹1,500 per person",
+  //   geo_coordinates: "28.4595° N, 77.0266° E",
+  //   place_address: "Sector 29, Gurugram, Haryana 122001",
+  //   location: "Gurugram, Haryana, India",
+  // };
 
   return (
-    <Card sx={{ maxWidth: 345, margin: 1 }}>
+    <Card sx={ { maxWidth: 345, margin: 1 } } className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <CardMedia
+        component="img"
+        alt={ places?.activity_name || 'Activity Image' }
+        height="140"
+        image={ imageSrc }
+        onError={ handleImageError }
+        className="object-cover"
+      />
       <CardContent>
-        {title && (
-          <Typography variant="h5" component="div">
-            {title}
-          </Typography>
-        )}
-        {description && (
-          <Typography variant="body2" color="text.secondary">
-            {description}
-          </Typography>
-        )}
+        <Typography variant="h5" component="div" className="font-bold mb-2">
+          { places.activity_name }
+        </Typography>
+        <Typography variant="body2" color="text.secondary" className="mb-2">
+          { places.activity_description }
+        </Typography>
+        <Typography variant="body2" color="text.primary" className="mb-1">
+          <strong>Pricing:</strong> { places.pricing }
+        </Typography>
+        <Typography variant="body2" color="text.primary" className="mb-1">
+          <strong>Location:</strong> { places.location }
+        </Typography>
+        <Typography variant="body2" color="text.primary" className="mb-1">
+          <strong>Address:</strong> { places.place_address }
+        </Typography>
+        <Typography variant="body2" color="text.primary">
+          <strong>Coordinates:</strong> { places.geo_coordinates }
+        </Typography>
       </CardContent>
     </Card>
   );
 };
 
 export default RecommendationCard;
+
