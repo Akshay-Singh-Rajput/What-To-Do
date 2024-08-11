@@ -211,9 +211,6 @@ function SwipeableEdgeDrawer(props) {
             </div>
           ) : (
             <div className="relative flex size-full flex-col justify-between group/design-root overflow-x-hidden">
-              <div className="flex justify-center text-2xl font-semibold mb-10">
-                Find your best activities
-              </div>
               <div className="px-4 py-3 mb-10">
                 <LocationSearchBar
                   apiKey={apiKey}
