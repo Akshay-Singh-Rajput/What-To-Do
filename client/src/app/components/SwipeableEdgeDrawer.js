@@ -14,6 +14,8 @@ import { useImmer } from "use-immer";
 import AdvanceActivityForm from "./AdvanceActivityForm";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { useActivites } from "../context/ActivitiesContext";
+import { useRouter } from "next/router";
 
 const drawerHeight = "90vh";
 const drawerBleeding = "0";
@@ -33,7 +35,8 @@ const StyledBox = styled("div")(({ theme }) => ({
 function SwipeableEdgeDrawer(props) {
   const { window, isOpen, open, setOpen } = props;
   const { user } = useAuth();
-
+  const { activities, setActivities } = useActivites();
+  console.log({ activities });
   const [ prompt, setPrompt ] = useState("");
   const [ currentPage, setCurrentPage ] = useState("initial");
   const [ personalizationOptions, setPersonalizationOptions ] = useState([
@@ -57,6 +60,9 @@ function SwipeableEdgeDrawer(props) {
     interests: ""
   });
   const [ apiResponse, setApiResponse ] = useState(null);
+
+  const router = useRouter();
+
 
   console.log({ activityForm });
 
@@ -96,7 +102,9 @@ function SwipeableEdgeDrawer(props) {
       }
     )
       .then((response) => {
+        setActivities(response.data.content);
         setApiResponse(response.data.content);
+        router.push('/profile/home');
       })
       .catch((error) => {
         console.error({ error });
@@ -182,7 +190,7 @@ function SwipeableEdgeDrawer(props) {
             <Page activityForm={ activityForm } cb={ setCurrentPage } />
           ) : currentPage === "personalization" ? (
             <div>
-                <AdvanceActivityForm activityForm={ activityForm } handleActivitryForm={ handleActivitryForm } handleGenerateActivity={ handleGenerateActivity }/>
+              <AdvanceActivityForm activityForm={ activityForm } handleActivitryForm={ handleActivitryForm } handleGenerateActivity={ handleGenerateActivity } />
             </div>
           ) : (
             <div className="relative flex size-full flex-col justify-between group/design-root overflow-x-hidden">
@@ -260,7 +268,7 @@ function SwipeableEdgeDrawer(props) {
               <Button
                 variant="contained"
                 color="primary"
-                className="px-4 py-2 flex items-center justify-center rounded-lg hover:bg-black text-sm"
+                className="px-4 py-2 flex items-center justify-center rounded-lg"
                 onClick={ handleGenerateActivity }
               >
                 Find Your Ideal Activities

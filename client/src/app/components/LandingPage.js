@@ -31,10 +31,15 @@ const LandingPage = () => {
                     <Typography variant="h5" gutterBottom sx={ { color: textColor } } className='text-center'>
                         Discover your perfect plan with WhatToDo! Personalized activities tailored to your mood, budget, location, group, age, and more. Start exploring now!
                     </Typography>
-                    { !user &&
+                    { user ?
+                        <Button variant="contained" color="primary" className='mt-2' onClick={ () => setIsOpenModal(true) }>
+                            Plan Activity
+                        </Button>
+                        :
                         <Button variant="contained" color="primary" className='mt-2' onClick={ () => setShowSignInPopUp(true) }>
                             get started
                         </Button>
+
                     }
                 </div>
 
