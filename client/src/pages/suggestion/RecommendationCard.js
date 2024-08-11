@@ -18,10 +18,7 @@ const RecommendationCard = ({ places, error }) => {
     );
   }
 
-  const [latitude, longitude] = places.geo_coordinates
-    .replace(/[^\d.,-]/g, '')
-    .split(',') 
-    .map(coord => coord.trim()); 
+  const [latitude, longitude] = places?.geo_coordinates?.replace(/[^\d.,-]/g, '')?.split(',').map(coord => coord.trim()); 
   const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
 
   return (
@@ -53,7 +50,7 @@ const RecommendationCard = ({ places, error }) => {
         <Typography variant="body2" color="text.primary" className="geo-coordinates">
           <strong>Coordinates: </strong> 
           <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="google-maps-link">
-            {places.geo_coordinates}
+            {places?.geo_coordinates}
           </a>
         </Typography>
       </CardContent>
