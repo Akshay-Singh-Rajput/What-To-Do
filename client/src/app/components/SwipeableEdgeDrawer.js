@@ -15,6 +15,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useGlobalContext } from "../context/GlobalContext";
 import { useRouter } from "next/router";
+import Close from "@mui/icons-material/Close";
 
 const drawerHeight = "90vh";
 const drawerBleeding = "0";
@@ -56,6 +57,7 @@ function SwipeableEdgeDrawer(props) {
   const [selectedPersonalization, setSelectedPersonalization] = useState(
     personalizationOptions
   );
+  const {setIsBottomSheetOpen } = useGlobalContext();
   const [activityForm, setActivityForm] = useImmer({
     location: "",
     nDays: 1,
@@ -168,7 +170,11 @@ function SwipeableEdgeDrawer(props) {
         ModalProps={{
           keepMounted: true,
         }}
+        className="relative"
       >
+         <div className="absolute right-4 top-4 cursor-pointer" onClick={()=>setIsBottomSheetOpen(false)}>
+              <Close />
+          </div>
         <StyledBox
           sx={{
             position: "absolute",
@@ -241,7 +247,7 @@ function SwipeableEdgeDrawer(props) {
                   </p>
                   <div className="flex w-full flex-1 items-stretch rounded-xl">
                     <input
-                      placeholder="50 kms"
+                      placeholder="e.g. 50"
                       className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl focus:outline-0 focus:ring-0 border-none bg-gray-100 focus:border-none h-14 placeholder:text-gray-500 p-4 rounded-r-none border-r-0 pr-2 text-black font-normal leading-normal"
                       value={activityForm.radius}
                       onChange={({ target: { value } }) => handleActivitryForm({ key: "radius", value })}
@@ -271,13 +277,9 @@ function SwipeableEdgeDrawer(props) {
                 </label>
               </div>
               <div className="mt-5 flex justify-center">
-                <Button
-                  onClick={handleShowAdvancePreferences}
-                  variant="outlined"
-                  color="primary"
-                >
+                <div className="underline font-medium">
                   Go Advance Personalization
-                </Button>
+                </div>
               </div>
               <Typography className="my-4 text-center">OR</Typography>
               <Button
