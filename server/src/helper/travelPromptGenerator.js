@@ -97,27 +97,91 @@ const createPrompt = (payload) => {
 
 
 
+const promptGenerator = (payload) => {
+    const {
+        location,
+        nDays,
+        nHrs,
+        nPeople,
+        budget,
+        radius,
+        activities,
+        feelings,
+        gender,
+        ageRange,
+        interests,
+        travelPreferences
+    } = payload;
 
-
-
- 
- const promptGenerator = () => {
-    let str = `Generate Travel Plan for Location : Delhi, India, for 1 Days for 1 with a Cheap budget, give me Hotels options list with HotelName, Hotel address, Price, hotel image url, geo coordinates, rating, descriptions and  suggest itinerary with placeName, Place Details, Place Image Url, Geo Coordinates,Place address, ticket Pricing, Time travel each of the location for 1 days with each day plan with best time to visit in JSON format.`;
-
-    let str2 = `Generate Travel Plan for Location : Las Vegas, for 3 Days for Couple with a Cheap budget ,Give me a Hotels options list with HotelName, Hotel address, Price, hotel image url, geo coordinates, rating, descriptions and  suggest itinerary with placeName, Place Details, Place Image Url, Geo Coordinates, ticket Pricing, rating, Time travel each of the location for 3 days with each day plan with best time to visit in JSON format.`;
-
-    let userPrompt = {
-        "role": "user",
-        "parts": [
-            {
-                "text": str
-            }
-        ]
+    // Define possible values
+    const budgetEnum = [ 'Cheap', 'Moderate', 'Luxury' ];
+    const nPeopleEnum = [ "Just me", "A couple", "Family", "Friends" ];
+    const initialFeelingOptions = [ "Happy", "Relax", "Inspired", "Stressed" ];
+    const activityType = {
+        Both: [ "Hiking", "Picnicking", "Biking", "Camping", "Beach Day", "Sports", "Running/Jogging", "Fishing", "Kayaking/Canoeing", "Gardening", "Board Games", "Cooking/Baking", "Movie Marathon", "Video Games", "Puzzle Solving", "DIY Crafts", "Book Club", "Karaoke", "Escape Room", "Trivia Night" ],
+        Outdoor: [ "Hiking", "Picnicking", "Biking", "Camping", "Beach Day", "Sports", "Running/Jogging", "Fishing", "Kayaking/Canoeing", "Gardening" ],
+        Indoor: [ "Board Games", "Cooking/Baking", "Movie Marathon", "Video Games", "Puzzle Solving", "DIY Crafts", "Book Club", "Karaoke", "Escape Room", "Trivia Night" ]
     };
 
-    chatPrompt.push(userPrompt);
+    // Helper function to format the activities list
+    const formatActivities = (activities) => {
+        if (!activities || activities.length === 0) return '';
+        return `Activities of interest: ${activities.join(', ')}.`;
+    };
 
-    return chatPrompt;
+    // Helper function to format interests
+    const formatInterests = (interests) => {
+        if (!interests || interests.length === 0) return '';
+        return `Interested in: ${interests.join(', ')}.`;
+    };
+
+    // Constructing the prompt based on available data
+    let prompt = `Generate Activities Plan`;
+
+    if (location) {
+        prompt += ` for Location: ${location}`;
+    }
+
+    if (radius) {
+        prompt += ` with a radius of ${radius} kms`;
+    }
+
+    if (nDays) {
+        prompt += ` for ${nDays} Days`;
+    }
+
+    if (nHrs) {
+        prompt += ` for ${nHrs} Hours`;
+    }
+    if (nPeople && nPeopleEnum.includes(nPeople)) {
+        prompt += ` for ${nPeople}`;
+    }
+
+    if (budget && budgetEnum.includes(budget)) {
+        prompt += ` with a ${budget} budget`;
+    }
+
+    if (activities && activities.length > 0) {
+        prompt += ` Focus on the following activities: ${formatActivities(activities)}`;
+    }
+
+    if (feelings && feelings.length > 0) {
+        prompt += ` Ensure the activites plan matches the following feelings: ${feelings.join(', ')}.`;
+    }
+
+    if (gender) {
+        prompt += ` Tailor the suggestions based on gender preference: ${gender}.`;
+    }
+
+    if (ageRange) {
+        prompt += ` Adjust recommendations according to age range: ${ageRange}.`;
+    }
+
+    if (interests && interests.length > 0) {
+        prompt += ` Include activities for the following interests: ${formatInterests(interests)}.`;
+    }
+
+    return prompt;
 };
 
 

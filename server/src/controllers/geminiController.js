@@ -1,6 +1,6 @@
 const express = require('express');
 const { generateAiContent } = require('../services/gemini');
-const { createPrompt } = require('../helper/travelPromptGenerator');
+const { createPrompt, promptGenerator } = require('../helper/travelPromptGenerator');
 
 // const createPrompt = (payload) => {
 //     const { location, nDays, nPeople, budget, radius, } = payload;
@@ -56,31 +56,32 @@ const { createPrompt } = require('../helper/travelPromptGenerator');
 // };
 
 const getSuggestions = async (req, res) => {
-    let { prompt } = req.body;
+    let { payload } = req.body;
+
+    if (!payload) {
+        return res.status(400).json({ message: 'Please provide the details of the activities.' });
+    }
 
 
     const payload2 = {
-        location: "Paris",
-        nDays: 5,
-        nPeople: "Family",
+        location: "Delhi",
+        nDays: 1,
+        nHrs: 2,
+        nPeople: "Friends",
         budget: "Moderate",
         radius: 50,
         activities: [ "Hiking", "Cooking/Baking" ],
         feelings: [ "Happy", "Inspired" ],
         gender: "All",
-        ageRange: "18-45",
-        interests: [ "Outdoor", "Indoor" ],
-        travelPreferences: {
-            transportMode: "Public Transport",
-            preferredTime: "Morning"
-        }
+        ageRange: "18-30",
+        interests: [ "Outdoor", "Indoor" ]
     };
 
-    prompt = createPrompt(prompt);
+    let prompt = promptGenerator(payload);
 
     try {
-        const { text, history } = await generateAiContent(req.user.email, prompt);
-        res.status(200).json({ content: text, history });
+        const { text, history, response } = await generateAiContent(req.user.email, prompt);
+        res.status(200).json({ content: text });
     } catch (error) {
         res.status(500).json({ error: 'Failed to generate AI content' });
     }

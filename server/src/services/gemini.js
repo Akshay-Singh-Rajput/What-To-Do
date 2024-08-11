@@ -10,18 +10,17 @@ if (!API_KEY) {
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-const model = genAI.getGenerativeModel(
-    {
-        model: "gemini-1.5-flash-latest",
-        generationConfig: {
-            "temperature": 1,
-            "topP": 0.95,
-            "topK": 64,
-            "maxOutputTokens": 8192,
-            "responseMimeType": "application/json"
-        }
-    });
-// const chat = model.startChat();
+const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash-latest",
+    generationConfig: {
+        "temperature": 1,
+        "topP": 0.95,
+        "topK": 64,
+        "maxOutputTokens": 8192,
+        "responseMimeType": "application/json"
+    }
+});
+
 let generationConfig = {
     "temperature": 1,
     "topP": 0.95,
@@ -33,10 +32,10 @@ const chatInstances = {};
 
 const createChatInstance = (email) => {
     chatInstances[ email ] = model.startChat(
-        {
-            history: history
-        }
-    );
+    //     {
+    //     history: history
+    // }
+);
 };
 
 async function generateAiContent(email, prompt) {
@@ -45,12 +44,18 @@ async function generateAiContent(email, prompt) {
             createChatInstance(email);
         }
         const chat = chatInstances[ email ];
-        const result = await chat.sendMessage(prompt);
-        // const result2 = await model.generateContent(prompt);
+
+        // Adding the system instruction to the prompt
+        const systemPrompt = `You are a model that strictly outputs a list of 1 object. Each object must contain the following key names and values: "activity_name", "activity_image", "activity_description", "pricing", "geo_coordinates", "place_address", and "location". The "activity_image" must be a valid image URL sourced from a Google Images search. Do not include any additional text or keys. The output should only be the list of objects in the specified format.`;
+
+        const combinedPrompt = `${systemPrompt}\n\n${prompt}`;
+
+        const result = await chat.sendMessage(combinedPrompt);
         const history = chat._history;
         const response = await result.response;
         const text = await response.text();
-        return { text, history };
+        let parsedText = JSON.parse(text)
+        return { text: parsedText, history, response };
     } catch (error) {
         console.error("Error generating AI content:", error);
         throw error;
