@@ -16,7 +16,7 @@ import { useAuth } from "../context/AuthContext";
 import { useGlobalContext } from "../context/GlobalContext";
 import { useRouter } from "next/router";
 import Close from "@mui/icons-material/Close";
-
+import Loader from "./Loader";
 const drawerHeight = "90vh";
 const drawerBleeding = "0";
 
@@ -57,7 +57,7 @@ function SwipeableEdgeDrawer(props) {
   const [selectedPersonalization, setSelectedPersonalization] = useState(
     personalizationOptions
   );
-  const {setIsBottomSheetOpen } = useGlobalContext();
+  const { previousActivities = [], getUserProfile, setIsBottomSheetOpen } = useGlobalContext();
   const [activityForm, setActivityForm] = useImmer({
     location: "",
     nDays: 1,
@@ -277,7 +277,7 @@ function SwipeableEdgeDrawer(props) {
                 </label>
               </div>
               <div className="mt-5 flex justify-center">
-                <div className="underline font-medium">
+                <div className="underline font-medium" onClick={handleShowAdvancePreferences}>
                   Go Advance Personalization
                 </div>
               </div>
@@ -294,7 +294,7 @@ function SwipeableEdgeDrawer(props) {
           )}
           {loading && (
             <LoaderOverlay>
-              
+              <Loader />
             </LoaderOverlay>
           )}
         </StyledBox>
