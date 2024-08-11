@@ -10,14 +10,14 @@ import {
   ListItem,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import RecommendationCard from "./RecommendationCard";
+import RecommendationCard from "../../app/components/RecommendationCard";
 import Loader from "../../app/components/Loader";
 const Page = ({ prompt, cb }) => {
   const { user } = useAuth();
-  const [isTyping, setIsTyping] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [apiResponse, setApiResponse] = useState("");
-  const [error, setError] = useState(""); 
+  const [ isTyping, setIsTyping ] = useState(false);
+  const [ loading, setLoading ] = useState(true);
+  const [ apiResponse, setApiResponse ] = useState("");
+  const [ error, setError ] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -30,13 +30,13 @@ const Page = ({ prompt, cb }) => {
       }
     }, 1000);
     return () => clearTimeout(timeoutId);
-  }, [user, router]);
+  }, [ user, router ]);
 
   useEffect(() => {
     if (prompt) {
       handleSendMessage(prompt);
     }
-  }, [prompt]);
+  }, [ prompt ]);
 
   const handleSendMessage = (inputMessage) => {
     if (inputMessage.trim() === "") return;
@@ -56,35 +56,35 @@ const Page = ({ prompt, cb }) => {
       )
       .then((response) => {
         setApiResponse(response.data.content);
-        setError(""); 
+        setError("");
         setIsTyping(false);
         cb("recommendations");
       })
       .catch((error) => {
         setIsTyping(false);
-        setError("Failed to fetch recommendations. Please try again."); 
+        setError("Failed to fetch recommendations. Please try again.");
         cb("initial");
       });
   };
 
   const parseResponse = (response) => {
     const cardsData = [];
-    
+
     const sections = response.split("\n\n");
-  
+
     sections.forEach((section) => {
       const lines = section.split("\n").filter(line => line.trim() !== "");
-  
+
       if (lines.length > 0) {
-        const titleLine = lines[0].replace(/^## \*\*|\*\*$/g, "").trim(); 
+        const titleLine = lines[ 0 ].replace(/^## \*\*|\*\*$/g, "").trim();
         const descriptionLines = lines.slice(1).map(line => line.trim()).filter(line => line !== "").join(" ");
-        
+
         if (titleLine) {
           cardsData.push({ title: titleLine, description: descriptionLines });
         }
       }
     });
-  
+
     return cardsData;
   };
 
@@ -92,7 +92,7 @@ const Page = ({ prompt, cb }) => {
     const cardsData = parseResponse(apiResponse);
 
     if (error) {
-      return <RecommendationCard error={error} />;
+      return <RecommendationCard error={ error } />;
     }
 
     if (cardsData.length === 0) {
@@ -101,9 +101,9 @@ const Page = ({ prompt, cb }) => {
 
     return cardsData.map((card, index) => (
       <RecommendationCard
-        key={index}
-        title={card.title}
-        description={card.description}
+        key={ index }
+        title={ card.title }
+        description={ card.description }
       />
     ));
   };
@@ -112,17 +112,17 @@ const Page = ({ prompt, cb }) => {
     <Fragment>
       <Box
         className="h-full w-full p-10"
-        sx={{
+        sx={ {
           backgroundColor: (theme) =>
             theme.palette.mode === "dark" ? "black" : "white",
           color: (theme) => (theme.palette.mode === "dark" ? "white" : "black"),
-        }}
+        } }
       >
         <Typography variant="h4" className="text-center mb-4">
           Interactive Chat: Communicate with Our AI Assistant
         </Typography>
         <Box className="w-full h-[90%] flex flex-col max-w-[60%] mx-auto p-4 border border-gray-300 rounded-xl">
-          {loading ? (
+          { loading ? (
             <Box
               display="flex"
               justifyContent="center"
@@ -134,12 +134,12 @@ const Page = ({ prompt, cb }) => {
           ) : user ? (
             <Fragment>
               <Box className="flex-1 overflow-y-auto mb-4 pr-4">
-                {isTyping && (
+                { isTyping && (
                   <Box className="max-w-xs bg-gray-200 text-black rounded-lg p-2 my-1 self-start">
                     <Typography>Wait for the adventure...</Typography>
                   </Box>
-                )}
-                {!isTyping && <Box className="flex flex-wrap mt-4">{renderCards()}</Box>}
+                ) }
+                { !isTyping && <Box className="flex flex-wrap mt-4">{ renderCards() }</Box> }
               </Box>
             </Fragment>
           ) : (
@@ -174,7 +174,7 @@ const Page = ({ prompt, cb }) => {
                 </ListItem>
               </List>
             </Box>
-          )}
+          ) }
         </Box>
       </Box>
     </Fragment>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import RecommendationCard from "../suggestion/RecommendationCard";
+import RecommendationCard from "../../app/components/RecommendationCard";
 import { useGlobalContext } from "../../app/context/GlobalContext";
 import { CircularProgress, Box, Typography, Button } from "@mui/material";
 import Loader from "../../app/components/Loader";
