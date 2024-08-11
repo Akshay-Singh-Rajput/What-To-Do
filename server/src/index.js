@@ -8,9 +8,13 @@ const { getDatabaseStatus } = require('./config/dbConnectionStatus');
 require('dotenv').config();
 
 
+const corsOptions = {
+    origin: '*',
+};
+
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use((req, res, next) => {
     req.startTime = Date.now();
     next();
