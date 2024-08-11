@@ -23,11 +23,21 @@ async function addActivitiesByEmail(email, newActivities) {
 }
 const getSuggestions = async (req, res) => {
     let { payload } = req.body;
+    const { email } = req.user;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw new Error('User not found');
+    }
 
     if (!payload) {
         return res.status(400).json({ message: 'Please provide the details of the activities.' });
     }
 
+    if(!payload.location){
+        payload.location = "India"
+    }
 
     const payload2 = {
         location: "Delhi",
@@ -46,15 +56,17 @@ const getSuggestions = async (req, res) => {
     let prompt = promptGenerator(payload);
 
     try {
-        const { jsonData, history, response } = await generateAiContent(req.user.email, prompt);
+        const { jsonData, history, response } = await generateAiContent(email, prompt);
         const activities = {
             prompt: prompt,
             payload: payload,
             data: jsonData
         };
-        const user = await addActivitiesByEmail(email, activities);
+        user.activities.push(activities);
+        await user.save();
         res.status(200).json({ content: jsonData });
     } catch (error) {
+        console.log({ error });
         res.status(500).json({ error: 'Failed to generate AI content' });
     }
 };

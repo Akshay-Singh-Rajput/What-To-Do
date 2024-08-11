@@ -99,10 +99,10 @@ const createPrompt = (payload) => {
 
 const promptGenerator = (payload) => {
     const {
-        location,
+        location="India",
         nDays,
         nHrs,
-        nPeople,
+        nPeople=1,
         budget,
         radius,
         activities,
@@ -110,8 +110,8 @@ const promptGenerator = (payload) => {
         gender,
         ageRange,
         interests,
-        travelPreferences
     } = payload;
+    console.log({ location })
 
     // Define possible values
     const budgetEnum = [ 'Cheap', 'Moderate', 'Luxury' ];
@@ -138,9 +138,7 @@ const promptGenerator = (payload) => {
     // Constructing the prompt based on available data
     let prompt = `Generate Activities Plan`;
 
-    if (location) {
-        prompt += ` for Location: ${location}`;
-    }
+    prompt += ` for Location: ${location || "India"}`;
 
     if (radius) {
         prompt += ` with a radius of ${radius} kms`;
@@ -207,5 +205,4 @@ let history = [
 ];
 
 
-console.log(history);
 module.exports = { promptGenerator, history, createPrompt };

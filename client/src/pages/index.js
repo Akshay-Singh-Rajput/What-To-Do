@@ -5,8 +5,8 @@ import { NextSeo } from "next-seo";
 import LandingPage from "../app/components/LandingPage";
 import { Box, Container } from "@mui/material";
 import { useAuth } from "../app/context/AuthContext";
-import PreviousActivities from "../app/components/PreviousActivities";
 import DemoCards from "./demoCards/DemoCards";
+import PreviousActivities from "./user/PreviousActivities";
 
 export default function Home() {
   const { user } = useAuth();
@@ -29,11 +29,13 @@ export default function Home() {
       <Container maxWidth="lg" className="flex flex-col gap-0">
         {
           user ?
-            <DemoCards />
+            <PreviousActivities />
             :
-            <LandingPage />
+            <>
+              <LandingPage />
+              <Footer />
+            </>
         }
-        <Footer />
       </Container>
     </Box>
   );
