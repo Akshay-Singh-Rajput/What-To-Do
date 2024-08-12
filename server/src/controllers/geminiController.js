@@ -54,7 +54,6 @@ const getSuggestions = async (req, res) => {
     };
     user.activities.push(activities);
     await user.save();
-    console.log('jsonData', jsonData)
     let content = await updateContentWithPhotoUrls(jsonData);
     res.status(200).json({ content: content });
   } catch (error) {

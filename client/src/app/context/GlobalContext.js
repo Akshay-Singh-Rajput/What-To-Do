@@ -1,6 +1,7 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 const GlobalContext = createContext();
 
@@ -104,10 +105,13 @@ export const GlobalProvider = ({ children }) => {
     const [ currentActivities, setCurrentActivities ] = useState([]);
     const [ previousActivities, setPreviousActivities ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(false);
-    const [skeletonLoading, setSkeletonLoading] = useState(false);
+    const [ skeletonLoading, setSkeletonLoading ] = useState(false);
+    const [ isGlobalProviderMounted, setIsGlobalProviderMounted ] = useState(false);
+    const [ userProfile, setUserProfile ] = useLocalStorage('user', user);
 
 
     const getUserProfile = () => {
+        if (!user?.token) return;
         axios.get('/user/profile',
             {
                 headers: {
@@ -118,12 +122,21 @@ export const GlobalProvider = ({ children }) => {
         ).then(response => {
             let data = response?.data || {};
             setUser(data);
+            setUserProfile(data);
             setPreviousActivities(data?.user?.activities || []);
         }).catch(error => {
 
         });
     };
 
+
+    useEffect(() => {
+        if (userProfile) {
+            setUser(userProfile);
+        }
+        getUserProfile();
+        setIsGlobalProviderMounted(true);
+    }, []);
 
     return (
         <GlobalContext.Provider value={
@@ -133,7 +146,8 @@ export const GlobalProvider = ({ children }) => {
                 previousActivities, setPreviousActivities,
                 isBottomSheetOpen, setIsBottomSheetOpen,
                 isLoading, setIsLoading,
-                skeletonLoading, setSkeletonLoading
+                skeletonLoading, setSkeletonLoading,
+                isGlobalProviderMounted, setIsGlobalProviderMounted
             } }>
             { children }
         </GlobalContext.Provider>

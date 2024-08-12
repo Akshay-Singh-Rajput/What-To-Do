@@ -37,8 +37,8 @@ const handleGoogleSignIn = async (req, res) => {
         const token = generateJwtToken(email);
 
         // Return the token
-        return res.status(200).json({ message: 'Login successful', token, displayName: user.name, });
-} catch (error) {
+        return res.status(200).json({ message: 'Login successful', token, displayName: user.name, user });
+    } catch (error) {
         console.error('Error handling Google sign-in:', error);
         return res.status(500).json({ error: 'Failed to handle Google sign-in' });
     }
