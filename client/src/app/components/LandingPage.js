@@ -22,7 +22,7 @@ const LandingPage = () => {
     const introTextColor = isDarkMode ? 'text-white' : 'text-black';
     const introBackgroundColor = isDarkMode ? 'bg-gray-900' : 'bg-gray-100';
 
-    if (!isGlobalProviderMounted) return "<></>";
+    if (!isGlobalProviderMounted) return "";
 
     return (
         <>
