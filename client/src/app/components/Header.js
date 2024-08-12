@@ -122,14 +122,12 @@ export default function Header() {
                 <div className="hidden md:flex gap-8 justify-end items-center">
                   {user ? (
                     <>
-                      <Link href="/suggestion/page" passHref>
-                        <Typography
-                          variant="body1"
-                          className="cursor-pointer font-semibold"
-                        >
-                          Plan Activity
-                        </Typography>
-                      </Link>
+                      <Typography onClick={handleBottomSheetToggle}
+                        variant="body1"
+                        className="cursor-pointer font-semibold"
+                      >
+                        Plan Activity
+                      </Typography>
                       <header
                         style={{
                           display: "flex",
@@ -255,7 +253,7 @@ export default function Header() {
         />
 
         {isLoading && (
-          <div className="fixed w-full h-full flex justify-center items-center">
+          <div className="fixed w-full h-full flex justify-center items-center bg-[#0c0c0c66]">
             <Loader />
           </div>
         )}
