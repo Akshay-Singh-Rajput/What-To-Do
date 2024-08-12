@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
 import SwipeableEdgeDrawer from './SwipeableEdgeDrawer';
 import SignInModal from './SignInModal';
+import { useGlobalContext } from '../context/GlobalContext';
 
 const LandingPage = () => {
     const { user } = useAuth();
@@ -12,6 +13,8 @@ const LandingPage = () => {
     const { themeMode } = useThemeContext();
     const [ isOpenModal, setIsOpenModal ] = useState(false);
     const [ showSignInPopUp, setShowSignInPopUp ] = useState(false);
+    const { isGlobalProviderMounted } = useGlobalContext();
+
 
     const textColor = theme.palette.text.primary;
     const isDarkMode = themeMode === 'dark';
@@ -19,6 +22,7 @@ const LandingPage = () => {
     const introTextColor = isDarkMode ? 'text-white' : 'text-black';
     const introBackgroundColor = isDarkMode ? 'bg-gray-900' : 'bg-gray-100';
 
+    if (!isGlobalProviderMounted) return "<></>";
 
     return (
         <>

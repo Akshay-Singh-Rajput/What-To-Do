@@ -4,6 +4,7 @@ import { styled } from '@mui/system';
 import { Google } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from '../context/AuthContext';
+import { useGlobalContext } from '../context/GlobalContext';
 
 const PaperStyled = styled('div')(({ theme }) => ({
     backgroundColor: 'transparent',
@@ -32,6 +33,7 @@ const SignInButton = styled(Button)(({ theme }) => ({
 const SignInModal = ({ open, onClose }) => {
     const [ loading, setLoading ] = useState(false);
     const { user, googleSignIn, logOut } = useAuth();
+    const { isGlobalProviderMounted } = useGlobalContext();
 
     const handleGoogleSignIn = async () => {
         setLoading(true);
@@ -50,6 +52,10 @@ const SignInModal = ({ open, onClose }) => {
         }
         console.log({ user })
     }, [ user ])
+
+
+    if (!isGlobalProviderMounted) return "<></>";
+
 
     return (
         <Dialog open={ open } onClose={ onClose } PaperComponent={ PaperStyled } fullWidth maxWidth="sm">

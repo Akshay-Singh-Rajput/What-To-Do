@@ -5,7 +5,7 @@ import { darkTheme, lightTheme } from '../theme';
 const ThemeContext = createContext();
 
 export const ThemeContextProvider = ({ children }) => {
-    const [ themeMode, setThemeMode ] = useState('light');
+    const [ themeMode, setThemeMode ] = useState('dark');
 
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -13,12 +13,12 @@ export const ThemeContextProvider = ({ children }) => {
     }, []);
 
     const toggleTheme = () => {
-        const newTheme = themeMode === 'light' ? 'dark' : 'light';
+        const newTheme = themeMode === 'dark' ? 'light' : 'dark';
         setThemeMode(newTheme);
         localStorage.setItem('theme', newTheme);
     };
 
-    const theme = themeMode === 'dark' ? darkTheme : lightTheme;
+    const theme = themeMode === 'light' ? lightTheme : darkTheme;
 
     return (
         <ThemeContext.Provider value={ { themeMode, toggleTheme } }>

@@ -9,12 +9,14 @@ import { auth } from "../firebase";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { usePathname } from 'next/navigation';
+import useLocalStorage from "../hooks/useLocalStorage";
 
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
     const [ user, setUser ] = useState(null);
     const [ pathname, setPathname ] = useState('');
+    const [ userProfile, setUserProfile ] = useLocalStorage('user', user);
 
     const router = useRouter();
 
@@ -32,6 +34,7 @@ export const AuthContextProvider = ({ children }) => {
 
     const logOut = () => {
         signOut(auth);
+        setUserProfile('');
     };
 
     const handleGoogleSignIn = (idToken) => {
@@ -41,10 +44,31 @@ export const AuthContextProvider = ({ children }) => {
             }
         }).then(response => {
             setUser(response.data);
+            setUserProfile(response.data);
         }).catch(error => {
 
         });
     };
+
+    const getUserProfile = () => {
+        if (!user?.token) return;
+        axios.get('/user/profile',
+            {
+                headers: {
+                    accepts: "application/json",
+                    Authorization: `Bearer ${user?.token}`,
+                },
+            }
+        ).then(response => {
+            let data = response?.data || {};
+            setUser(data);
+            setUserProfile(data);
+            setPreviousActivities(data?.user?.activities || []);
+        }).catch(error => {
+
+        });
+    };
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {

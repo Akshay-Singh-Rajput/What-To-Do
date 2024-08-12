@@ -6,17 +6,22 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAuth } from '../../app/context/AuthContext';
 
 function PreviousActivities() {
-  const { previousActivities = [], getUserProfile, setIsBottomSheetOpen } = useGlobalContext();
+  const { user } = useAuth();
+  const { previousActivities = [], getUserProfile, setIsBottomSheetOpen, isGlobalProviderMounted } = useGlobalContext();
+
+
+  if (!isGlobalProviderMounted) return "<></>";
 
   useEffect(() => {
+    console.log('getUserProfile');
     getUserProfile();
   }, []);
 
-  console.log({ previousActivities });
+
   return (
     <div>
       {
-        previousActivities.length === 0 ? <>
+        previousActivities.length === 0 && !isGlobalProviderMounted ? <>
           <div className="text-center">
             <Typography variant="h6" gutterBottom className="mb-4">
               No activities have been created yet.
