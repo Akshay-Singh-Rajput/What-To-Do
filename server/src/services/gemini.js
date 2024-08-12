@@ -42,7 +42,8 @@ async function generateAiContent(email, prompt) {
     const chat = chatInstances[email];
 
     // Adding the system instruction to the prompt
-    const systemPrompt = `You are a model that strictly outputs a list of 10 objects. Each object must contain the following key names and values: "activity_name", "activity_image", "activity_description", "pricing", "geo_coordinates", "place_address", and "location". The "activity_image" must be a valid image URL. The "pricing" should be formatted according to the local currency of the selected location, including the appropriate currency denomination. Do not include any additional text or keys. The output should only be the list of objects in the specified format.`;
+    const systemPrompt = `You are a model that strictly outputs a list of 10 objects. Each object must contain the following key names and values: "activity_name", "activity_image", "activity_description", "pricing", "geo_coordinates", "place_address", and "location". The "activity_image" must be a valid and publicly accessible image URL that can be directly used on a web UI. The "pricing" should be formatted according to the local currency of the selected location, including the appropriate currency denomination. Do not include any additional text or keys. The output should only be the list of objects in the specified format.`;
+
 
     const combinedPrompt = `${systemPrompt}\n\n${prompt}`;
 
@@ -57,5 +58,6 @@ async function generateAiContent(email, prompt) {
     throw error;
   }
 }
+
 
 module.exports = { generateAiContent };
