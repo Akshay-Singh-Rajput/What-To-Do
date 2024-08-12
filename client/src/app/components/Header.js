@@ -23,15 +23,17 @@ import ProfileBox from "./ProfileBox";
 import SwipeableEdgeDrawer from "./SwipeableEdgeDrawer";
 import { useThemeContext } from "../context/ThemeContext";
 import { useGlobalContext } from "../context/GlobalContext";
+import Loader from "./Loader";
 
 export default function Header() {
-  const [ navbarOpen, setNavbarOpen ] = useState(false);
+  const [navbarOpen, setNavbarOpen] = useState(false);
   const { user, setUser, logOut } = useAuth();
-  const { isBottomSheetOpen, setIsBottomSheetOpen } = useGlobalContext();
+  const { isLoading, isBottomSheetOpen, setIsBottomSheetOpen } =
+    useGlobalContext();
   const router = useRouter();
   const isMobile = useMediaQuery("(max-width:600px)");
   const isLargeScreen = useMediaQuery("(min-width: 960px)");
-  const [ showSignInPopUp, setShowSignInPopUp ] = useState(false);
+  const [showSignInPopUp, setShowSignInPopUp] = useState(false);
 
   const themeMode = useThemeContext();
 
@@ -63,7 +65,7 @@ export default function Header() {
     return () => {
       router.events.off("routeChangeStart", handleRouteChange);
     };
-  }, [ router ]);
+  }, [router]);
 
   console.log(themeMode, "themeee");
 
@@ -75,7 +77,7 @@ export default function Header() {
             href="/"
             className="flex text-3xl text-white font-medium md:mb-0"
           >
-            { themeMode === "dark" ? (
+            {themeMode === "dark" ? (
               <img
                 className="h-24 w-24"
                 src="/What-light.png"
@@ -87,12 +89,12 @@ export default function Header() {
                 src="/What__1_dark.png"
                 alt="Light Theme Logo"
               />
-            ) }
+            )}
           </Link>
         </Typography>
 
         <Box
-          className={ `flex items-center ${isLargeScreen ? "gap-8" : "gap-2"}` }
+          className={`flex items-center ${isLargeScreen ? "gap-8" : "gap-2"}`}
         >
           <Box className="flex gap-2 items-center">
             <ThemeToggle />
@@ -108,7 +110,7 @@ export default function Header() {
                 edge="start"
                 color="inherit"
                 aria-label="menu"
-                onClick={ () => setNavbarOpen(!navbarOpen) }
+                onClick={() => setNavbarOpen(!navbarOpen)}
                 className=" justify-end"
               >
                 <MenuIcon />
@@ -116,9 +118,9 @@ export default function Header() {
             )
           ) : (
             <>
-              { isLargeScreen && (
+              {isLargeScreen && (
                 <div className="hidden md:flex gap-8 justify-end items-center">
-                  { user ? (
+                  {user ? (
                     <>
                       <Link href="/suggestion/page" passHref>
                         <Typography
@@ -129,11 +131,11 @@ export default function Header() {
                         </Typography>
                       </Link>
                       <header
-                        style={ {
+                        style={{
                           display: "flex",
                           justifyContent: "flex-end",
                           padding: "16px",
-                        } }
+                        }}
                       >
                         <ProfileBox />
                       </header>
@@ -143,34 +145,34 @@ export default function Header() {
                       <Typography
                         variant="body1"
                         className="cursor-pointer font-semibold"
-                        onClick={ handleSignInClick }
+                        onClick={handleSignInClick}
                       >
                         Sing In
                       </Typography>
                     </>
-                  ) }
+                  )}
                 </div>
-              ) }
+              )}
             </>
-          ) }
+          )}
           <Drawer
             anchor="right"
-            open={ !isLargeScreen && navbarOpen }
-            onClose={ () => setNavbarOpen(false) }
-            sx={ {
+            open={!isLargeScreen && navbarOpen}
+            onClose={() => setNavbarOpen(false)}
+            sx={{
               "& .MuiPaper-root": {
                 backgroundColor: (theme) => theme.palette.background.paper,
                 borderRadius: "0",
                 width: "70%",
                 height: "100dvh",
-                padding:"12px"
+                padding: "12px",
               },
-            } }
+            }}
           >
             <List>
-              { user ? (
+              {user ? (
                 <>
-                <ListItem onClick={ handleBottomSheetToggle }>
+                  <ListItem onClick={handleBottomSheetToggle}>
                     <Typography
                       variant="body1"
                       className="cursor-pointer font-semibold"
@@ -178,7 +180,6 @@ export default function Header() {
                       Plan Activity
                     </Typography>
                   </ListItem>
-                  
 
                   <ListItem>
                     <Link href="/user/PreviousActivities" passHref>
@@ -201,11 +202,10 @@ export default function Header() {
                       </Typography>
                     </Link>
                   </ListItem> */}
-                  
 
                   <ListItem
                     button
-                    onClick={ handleSignOut }
+                    onClick={handleSignOut}
                     className="flex gap-2 font-semibold"
                   >
                     <LogoutIcon />
@@ -225,13 +225,13 @@ export default function Header() {
                     </Link>
                   </ListItem> */}
 
-                  <ListItem button onClick={ handleSignInClick }>
+                  <ListItem button onClick={handleSignInClick}>
                     <Typography>
                       <ListItemText primary="Sign In" />
                     </Typography>
                   </ListItem>
                 </>
-              ) }
+              )}
               {/* <ListItem button>
                 <Link href="/profile/page" passHref>
                   <ListItemText primary="Profile" />
@@ -239,18 +239,26 @@ export default function Header() {
               </ListItem> */}
             </List>
           </Drawer>
-          
         </Box>
       </Toolbar>
 
       <>
-        { !user && (
+        {!user && (
           <SignInModal
-            open={ showSignInPopUp }
-            onClose={ () => setShowSignInPopUp(false) }
+            open={showSignInPopUp}
+            onClose={() => setShowSignInPopUp(false)}
           />
-        ) }
-        <SwipeableEdgeDrawer open={ isBottomSheetOpen } setOpen={ setIsBottomSheetOpen } />
+        )}
+        <SwipeableEdgeDrawer
+          open={isBottomSheetOpen}
+          setOpen={setIsBottomSheetOpen}
+        />
+
+        {isLoading && (
+          <div className="fixed w-full h-full flex justify-center items-center">
+            <Loader />
+          </div>
+        )}
       </>
     </AppBar>
   );

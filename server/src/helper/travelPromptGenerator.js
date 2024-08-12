@@ -1,101 +1,3 @@
-const createPrompt = (payload) => {
-    const {
-        location,
-        nDays,
-        nPeople,
-        budget,
-        radius,
-        activities,
-        feelings,
-        gender,
-        ageRange,
-        interests,
-        travelPreferences
-    } = payload;
-
-    // Define possible values
-    const budgetEnum = [ 'Cheap', 'Moderate', 'Luxury' ];
-    const nPeopleEnum = [ "Just me", "A couple", "Family", "Friends" ];
-    const initialFeelingOptions = [ "Happy", "Relax", "Inspired", "Stressed" ];
-    const activityType = {
-        Both: [ "Hiking", "Picnicking", "Biking", "Camping", "Beach Day", "Sports", "Running/Jogging", "Fishing", "Kayaking/Canoeing", "Gardening", "Board Games", "Cooking/Baking", "Movie Marathon", "Video Games", "Puzzle Solving", "DIY Crafts", "Book Club", "Karaoke", "Escape Room", "Trivia Night" ],
-        Outdoor: [ "Hiking", "Picnicking", "Biking", "Camping", "Beach Day", "Sports", "Running/Jogging", "Fishing", "Kayaking/Canoeing", "Gardening" ],
-        Indoor: [ "Board Games", "Cooking/Baking", "Movie Marathon", "Video Games", "Puzzle Solving", "DIY Crafts", "Book Club", "Karaoke", "Escape Room", "Trivia Night" ]
-    };
-
-    // Helper function to format the activities list
-    const formatActivities = (activities) => {
-        if (!activities || activities.length === 0) return '';
-        return `Activities of interest: ${activities.join(', ')}.`;
-    };
-
-    // Helper function to format interests
-    const formatInterests = (interests) => {
-        if (!interests || interests.length === 0) return '';
-        return `Interested in: ${interests.join(', ')}.`;
-    };
-
-    // Constructing the prompt based on available data
-    let prompt = `Generate Travel Plan`;
-
-    if (location) {
-        prompt += ` for Location: ${location}`;
-    }
-
-    if (radius) {
-        prompt += ` with a radius of ${radius} kms`;
-    }
-
-    if (nDays) {
-        prompt += ` for ${nDays} Days`;
-    }
-
-    if (nPeople && nPeopleEnum.includes(nPeople)) {
-        prompt += ` for ${nPeople}`;
-    }
-
-    if (budget && budgetEnum.includes(budget)) {
-        prompt += ` with a ${budget} budget`;
-    }
-
-    prompt += `, give me Hotels options list with HotelName, Hotel address, Price, hotel image URL, geo coordinates, rating, descriptions`;
-
-    if (activities && activities.length > 0) {
-        prompt += ` and suggest itinerary with placeName, Place Details, Place Image URL, Geo Coordinates, Place address, ticket Pricing as per location currency.`;
-        prompt += ` Focus on the following activities: ${formatActivities(activities)}`;
-    }
-
-    if (feelings && feelings.length > 0) {
-        prompt += ` Ensure the travel plan matches the following feelings: ${feelings.join(', ')}.`;
-    }
-
-    if (gender) {
-        prompt += ` Tailor the suggestions based on gender preference: ${gender}.`;
-    }
-
-    if (ageRange) {
-        prompt += ` Adjust recommendations according to age range: ${ageRange}.`;
-    }
-
-    if (interests && interests.length > 0) {
-        prompt += ` Include activities for the following interests: ${formatInterests(interests)}.`;
-    }
-
-    if (travelPreferences) {
-        if (travelPreferences.transportMode) {
-            prompt += ` Prefer ${travelPreferences.transportMode} for transport.`;
-        }
-        if (travelPreferences.preferredTime) {
-            prompt += ` Prefer visiting locations in the ${travelPreferences.preferredTime}.`;
-        }
-    }
-
-    prompt += ` Time travel each of the locations for 1 day with a detailed plan for each day, including the best time to visit in JSON format.`;
-
-    return prompt;
-};
-
-
 
 const promptGenerator = (payload) => {
     const {
@@ -111,7 +13,6 @@ const promptGenerator = (payload) => {
         ageRange,
         interests,
     } = payload;
-    console.log({ location })
 
     // Define possible values
     const budgetEnum = [ 'Cheap', 'Moderate', 'Luxury' ];
@@ -132,7 +33,8 @@ const promptGenerator = (payload) => {
     // Helper function to format interests
     const formatInterests = (interests) => {
         if (!interests || interests.length === 0) return '';
-        return `Interested in: ${interests.join(', ')}.`;
+        let interestsType = activityType[interests] || activityType['Both']
+        return `Interested in: ${interestsType.join(', ')}.`;
     };
 
     // Constructing the prompt based on available data
@@ -205,4 +107,4 @@ let history = [
 ];
 
 
-module.exports = { promptGenerator, history, createPrompt };
+module.exports = { promptGenerator, history };
