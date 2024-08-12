@@ -47,7 +47,7 @@ const LoaderOverlay = styled(Box)(({ theme }) => ({
 function SwipeableEdgeDrawer(props) {
   const { window, isOpen, open, setOpen } = props;
   const { user } = useAuth();
-  const { currentActivities, setCurrentActivities, setIsLoading } =
+  const { currentActivities, setCurrentActivities, setIsLoading, setSkeletonLoading } =
     useGlobalContext();
   const [prompt, setPrompt] = useState("");
   const [currentPage, setCurrentPage] = useState("initial");
@@ -117,8 +117,8 @@ function SwipeableEdgeDrawer(props) {
   };
 
   const handleGenerateActivity = () => {
-    setLoading(true);
     setIsLoading(true);
+    setSkeletonLoading(true);
     setOpen(false);
     axios
       .post(
@@ -140,9 +140,9 @@ function SwipeableEdgeDrawer(props) {
         console.error({ error });
       })
       .finally(() => {
-        resetActivityForm()
+        resetActivityForm();
         setIsLoading(false);
-        setLoading(false);
+        setSkeletonLoading(false);
       });
   };
 
@@ -327,11 +327,6 @@ function SwipeableEdgeDrawer(props) {
                 Find Your Ideal Activities
               </Button>
             </div>
-          )}
-          {loading && (
-            <LoaderOverlay>
-              <Loader />
-            </LoaderOverlay>
           )}
         </StyledBox>
       </SwipeableDrawer>
