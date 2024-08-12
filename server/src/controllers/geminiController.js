@@ -47,14 +47,14 @@ const getSuggestions = async (req, res) => {
       email,
       prompt
     );
+    let content = await updateContentWithPhotoUrls(jsonData);
     const activities = {
       prompt: prompt,
       payload: payload,
-      data: jsonData,
+      data: content,
     };
     user.activities.push(activities);
     await user.save();
-    let content = await updateContentWithPhotoUrls(jsonData);
     res.status(200).json({ content: content });
   } catch (error) {
     console.log({ error });
