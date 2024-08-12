@@ -104,6 +104,7 @@ export const GlobalProvider = ({ children }) => {
     const [ currentActivities, setCurrentActivities ] = useState([]);
     const [ previousActivities, setPreviousActivities ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(false);
+    const [skeletonLoading, setSkeletonLoading] = useState(false);
 
 
     const getUserProfile = () => {
@@ -131,7 +132,8 @@ export const GlobalProvider = ({ children }) => {
                 currentActivities, setCurrentActivities,
                 previousActivities, setPreviousActivities,
                 isBottomSheetOpen, setIsBottomSheetOpen,
-                isLoading, setIsLoading
+                isLoading, setIsLoading,
+                skeletonLoading, setSkeletonLoading
             } }>
             { children }
         </GlobalContext.Provider>
