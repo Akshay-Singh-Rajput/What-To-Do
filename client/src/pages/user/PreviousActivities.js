@@ -10,7 +10,7 @@ function PreviousActivities() {
   const { previousActivities = [], getUserProfile, setIsBottomSheetOpen, isGlobalProviderMounted } = useGlobalContext();
 
 
-  if (!isGlobalProviderMounted) return "<></>";
+  if (!isGlobalProviderMounted) return "";
 
   useEffect(() => {
     console.log('getUserProfile');

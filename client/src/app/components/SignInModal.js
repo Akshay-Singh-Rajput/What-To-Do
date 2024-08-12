@@ -54,7 +54,7 @@ const SignInModal = ({ open, onClose }) => {
     }, [ user ])
 
 
-    if (!isGlobalProviderMounted) return "<></>";
+    if (!isGlobalProviderMounted) return "";
 
 
     return (
