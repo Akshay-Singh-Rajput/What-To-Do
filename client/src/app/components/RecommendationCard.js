@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 import "./RecommendationCard.css";
 import NearMeIcon from "@mui/icons-material/NearMe";
@@ -7,8 +7,6 @@ const RecommendationCard = ({ places, error }) => {
   const [imageSrc, setImageSrc] = useState(places?.activity_image || "");
   const fallbackImage =
     "https://thumbs.dreamstime.com/b/happy-couple-love-travel-raised-hands-cliff-happy-couple-love-travel-raised-hands-cliff-norway-man-woman-112188598.jpg";
-
-  // State to store place names
 
   const handleImageError = () => {
     setImageSrc(fallbackImage);
@@ -70,7 +68,6 @@ const RecommendationCard = ({ places, error }) => {
         >
           <strong>Address: </strong> {places.place_address}
         </Typography>
-        
       </CardContent>
     </Card>
   );
