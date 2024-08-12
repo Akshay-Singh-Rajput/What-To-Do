@@ -103,6 +103,8 @@ export const GlobalProvider = ({ children }) => {
     const [ isBottomSheetOpen, setIsBottomSheetOpen ] = useState(false);
     const [ currentActivities, setCurrentActivities ] = useState([]);
     const [ previousActivities, setPreviousActivities ] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(false);
+
 
     const getUserProfile = () => {
         axios.get('/user/profile',
@@ -128,7 +130,8 @@ export const GlobalProvider = ({ children }) => {
                 getUserProfile,
                 currentActivities, setCurrentActivities,
                 previousActivities, setPreviousActivities,
-                isBottomSheetOpen, setIsBottomSheetOpen
+                isBottomSheetOpen, setIsBottomSheetOpen,
+                isLoading, setIsLoading
             } }>
             { children }
         </GlobalContext.Provider>

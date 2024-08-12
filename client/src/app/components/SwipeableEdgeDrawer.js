@@ -47,7 +47,8 @@ const LoaderOverlay = styled(Box)(({ theme }) => ({
 function SwipeableEdgeDrawer(props) {
   const { window, isOpen, open, setOpen } = props;
   const { user } = useAuth();
-  const { currentActivities, setCurrentActivities } = useGlobalContext();
+  const { currentActivities, setCurrentActivities, setIsLoading } =
+    useGlobalContext();
   const [prompt, setPrompt] = useState("");
   const [currentPage, setCurrentPage] = useState("initial");
   const [personalizationOptions, setPersonalizationOptions] = useState([
@@ -56,7 +57,11 @@ function SwipeableEdgeDrawer(props) {
   const [selectedPersonalization, setSelectedPersonalization] = useState(
     personalizationOptions
   );
-  const { previousActivities = [], getUserProfile, setIsBottomSheetOpen } = useGlobalContext();
+  const {
+    previousActivities = [],
+    getUserProfile,
+    setIsBottomSheetOpen,
+  } = useGlobalContext();
   const [activityForm, setActivityForm] = useImmer({
     location: "",
     nDays: 1,
@@ -68,13 +73,29 @@ function SwipeableEdgeDrawer(props) {
     feelings: [],
     gender: "All",
     ageRange: "",
-    interests: ""
+    interests: "",
   });
   const [apiResponse, setApiResponse] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const apiKey = "AIzaSyD55Jf-yj3s7jUla7VnaVSU6HyH2doHBWs";
+
+  const resetActivityForm = () => {
+    setActivityForm((state) => {
+      state.location = "";
+      state.nDays = 1;
+      state.nHrs = 1;
+      state.nPeople = "";
+      state.budget = "";
+      state.radius = "";
+      state.activities = [];
+      state.feelings = [];
+      state.gender = "All";
+      state.ageRange = "";
+      state.interests = "";
+    });
+  };
 
   useEffect(() => {
     if (prompt) {
@@ -90,16 +111,17 @@ function SwipeableEdgeDrawer(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   const handleActivitryForm = ({ key, value }) => {
-    setActivityForm(state => {
+    setActivityForm((state) => {
       state[key] = value;
     });
   };
 
   const handleGenerateActivity = () => {
     setLoading(true);
-    setOpen(false); 
-    setTimeout(() => {
-      axios.post(
+    setIsLoading(true);
+    setOpen(false);
+    axios
+      .post(
         "/ai/suggestions",
         { payload: activityForm },
         {
@@ -109,18 +131,19 @@ function SwipeableEdgeDrawer(props) {
           },
         }
       )
-        .then((response) => {
-          setCurrentActivities(response.data.content);
-          setApiResponse(response.data.content);
-          router.push('/demoCards/DemoCards');
-        })
-        .catch((error) => {
-          console.error({ error });
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }, 300); 
+      .then((response) => {
+        setCurrentActivities(response.data.content);
+        setApiResponse(response.data.content);
+        router.push("/demoCards/DemoCards");
+      })
+      .catch((error) => {
+        console.error({ error });
+      })
+      .finally(() => {
+        resetActivityForm()
+        setIsLoading(false);
+        setLoading(false);
+      });
   };
 
   const handleSelectPersonalization = (option) => {
@@ -171,9 +194,12 @@ function SwipeableEdgeDrawer(props) {
         }}
         className="relative"
       >
-         <div className="absolute right-4 top-4 cursor-pointer" onClick={()=>setIsBottomSheetOpen(false)}>
-              <Close />
-          </div>
+        <div
+          className="absolute right-4 top-4 cursor-pointer"
+          onClick={() => setIsBottomSheetOpen(false)}
+        >
+          <Close />
+        </div>
         <StyledBox
           sx={{
             position: "absolute",
@@ -216,24 +242,33 @@ function SwipeableEdgeDrawer(props) {
                   apiKey={apiKey}
                   searchField={activityForm.location}
                   onPlaceSelected={(place) =>
-                    handleActivitryForm({ key: "location", value: place.formatted_address })
+                    handleActivitryForm({
+                      key: "location",
+                      value: place.formatted_address,
+                    })
                   }
                 />
               </div>
               <div className="text-base font-medium mb-2">Travel Partner</div>
               <div className="flex flex-col px-4 py-4 mb-4 border-slate-600 border rounded-lg shadow-sm">
                 <div className="group flex-1">
-                  {["Just me", "A couple", "Family", "Friends"].map((option) => (
-                    <p
-                      key={option}
-                      className={`text-sm w-full font-bold leading-normal tracking-[0.015em] flex h-11 items-center justify-center truncate px-4 text-center group-[:first-child]:rounded-l-full group-[:last-child]:rounded-r-full ${
-                        activityForm.nPeople === option ? "text-white bg-slate-400" : ""
-                      }`}
-                      onClick={() => handleActivitryForm({ key: "nPeople", value: option })}
-                    >
-                      {option}
-                    </p>
-                  ))}
+                  {["Just me", "A couple", "Family", "Friends"].map(
+                    (option) => (
+                      <p
+                        key={option}
+                        className={`text-sm w-full font-bold leading-normal tracking-[0.015em] flex h-11 items-center justify-center truncate px-4 text-center group-[:first-child]:rounded-l-full group-[:last-child]:rounded-r-full ${
+                          activityForm.nPeople === option
+                            ? "text-white bg-slate-400"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          handleActivitryForm({ key: "nPeople", value: option })
+                        }
+                      >
+                        {option}
+                      </p>
+                    )
+                  )}
                 </div>
               </div>
               <div className="flex flex-wrap items-end gap-4 px-4 py-3">
@@ -246,7 +281,9 @@ function SwipeableEdgeDrawer(props) {
                       placeholder="e.g. 50"
                       className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl focus:outline-0 focus:ring-0 border-none bg-gray-100 focus:border-none h-14 placeholder:text-gray-500 p-4 rounded-r-none border-r-0 pr-2 text-black font-normal leading-normal"
                       value={activityForm.radius}
-                      onChange={({ target: { value } }) => handleActivitryForm({ key: "radius", value })}
+                      onChange={({ target: { value } }) =>
+                        handleActivitryForm({ key: "radius", value })
+                      }
                     />
                     <div
                       className="bg-slate-300 rounded-r-xl flex h-14 items-center justify-center px-4 cursor-pointer"
@@ -273,7 +310,10 @@ function SwipeableEdgeDrawer(props) {
                 </label>
               </div>
               <div className="mt-5 flex justify-center">
-                <div className="underline font-medium" onClick={handleShowAdvancePreferences}>
+                <div
+                  className="underline font-medium"
+                  onClick={handleShowAdvancePreferences}
+                >
                   Go Advance Personalization
                 </div>
               </div>

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import {Autocomplete } from "@react-google-maps/api";
+import { Autocomplete } from "@react-google-maps/api";
 import { InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-import "./LocationSearchBar.css"
+import "./LocationSearchBar.css";
 const libraries = ["places"];
 
 const LocationSearchBar = ({ apiKey, onPlaceSelected }) => {
@@ -27,11 +27,9 @@ const LocationSearchBar = ({ apiKey, onPlaceSelected }) => {
   };
 
   return (
-    <div
-      className="w-full text-center relative mb-5"
-    >
-     
-        <div className="absolute w-full">
+    <div className="w-full text-center relative mb-5">
+      <div className="absolute w-full">
+        {window.google && (
           <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
             <TextField
               type="text"
@@ -50,7 +48,8 @@ const LocationSearchBar = ({ apiKey, onPlaceSelected }) => {
               }}
             />
           </Autocomplete>
-        </div>
+        )}
+      </div>
     </div>
   );
 };
