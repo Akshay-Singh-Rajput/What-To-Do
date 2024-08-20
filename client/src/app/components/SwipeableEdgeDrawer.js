@@ -66,14 +66,14 @@ function SwipeableEdgeDrawer(props) {
     location: "",
     nDays: 1,
     nHrs: 1,
-    nPeople: "",
+    nPeople: "Just me",
     budget: "",
     radius: "",
     activities: [],
     feelings: [],
     gender: "All",
     ageRange: "",
-    interests: "",
+    interests: "Both",
   });
   const [apiResponse, setApiResponse] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -86,14 +86,14 @@ function SwipeableEdgeDrawer(props) {
       state.location = "";
       state.nDays = 1;
       state.nHrs = 1;
-      state.nPeople = "";
+      state.nPeople = "Just me";
       state.budget = "";
       state.radius = "";
       state.activities = [];
       state.feelings = [];
       state.gender = "All";
       state.ageRange = "";
-      state.interests = "";
+      state.interests = "Both";
     });
   };
 
